@@ -15,10 +15,13 @@ namespace ChcServer
     /// </summary>
     public class ServerPeer
     {
+
+        #region 变量及构造函数
+
         /// <summary>
-        /// 新连接的客户端
+        /// 服务器端套接字
         /// </summary>
-        private Socket clientsocket = null;
+        private Socket serversocket = null;
 
         /// <summary>
         /// 限制最大连接数量的信号量
@@ -30,31 +33,53 @@ namespace ChcServer
         /// </summary>
         private ClientPeerPool clientPeerPool = null;
 
-        public ServerPeer()
+        /// <summary>
+        /// 游戏应用层的抽象
+        /// </summary>
+        private IGameApplication application;
+
+        /// <summary>
+        /// 设置抽象层
+        /// </summary>
+        /// <param name="app"></param>
+        public void SetApplication(IGameApplication app)
         {
-            clientsocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            application = app;
         }
 
-        public void Start(int Port , int MaxCount)//端口号 最大人数
-        {   
+        public ServerPeer()
+        {
+            serversocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        }
+
+        #endregion
+
+        #region 启动服务器
+        public void Start(int Port, int MaxCount)//端口号 最大人数
+        {
             try
             {
+                Console.WriteLine("服务器启动成功");
                 semaphore = new Semaphore(MaxCount, MaxCount);
-                clientsocket.Bind(new IPEndPoint(IPAddress.Any, Port));
-                clientsocket.Listen(10);
+                serversocket.Bind(new IPEndPoint(IPAddress.Any, Port));
+                serversocket.Listen(10);
                 //挂起等待连接的最大数量
 
                 clientPeerPool = new ClientPeerPool(MaxCount);
-                for(int i = 0; i < MaxCount; i++)
+                for (int i = 0; i < MaxCount; i++)
                 {
-                    ClientPeer tempClient = new ClientPeer();
-                    clientPeerPool.EnqueuePool(tempClient);
+                    ClientPeer tempClient = new ClientPeer();   
 
                     tempClient.ReceiveComplatedEvent += PacketReceiveComplatedEvent;
                     //数据包解析完成后的回调
 
                     tempClient.ReceiveArgs.Completed += receive_Complateed;
                     //数据接收异步操作接受完成后的操作
+
+                    tempClient.SendFailEvent += DisConttect;
+                    //注册向客户端发送数据失败的事件
+
+                    clientPeerPool.EnqueuePool(tempClient);
                 }
 
                 startAccept(null);
@@ -64,11 +89,7 @@ namespace ChcServer
                 Console.WriteLine(e.Message);
             }
         }
-
-        
-
-
-
+        #endregion
 
         #region 接受连接
         private void startAccept(SocketAsyncEventArgs e)
@@ -80,9 +101,9 @@ namespace ChcServer
                 //事件生成时会调用委托
                 e.Completed += accept_Completed;//为事件注册方法
             }
-            semaphore.WaitOne();//若达到最大连接数量则阻止该线程
+            //semaphore.WaitOne();//若达到最大连接数量则阻止该线程
 
-            bool result = clientsocket.AcceptAsync(e);
+            bool result = serversocket.AcceptAsync(e);
             //判断异步事件是否执行完毕
             //结果: 1.被挂起没有执行完毕交给别的线程来执行  2.执行完毕直接执行完毕
 
@@ -107,10 +128,16 @@ namespace ChcServer
         /// <param name="e">SocketAsyncEventArgs</param>
         private void processAccept(SocketAsyncEventArgs e)
         {
+            semaphore.WaitOne();//若达到最大连接数量则阻止该线程
             //Socket clientsocket = e.AcceptSocket;
             ClientPeer clientPeer = clientPeerPool.DequeuePool();//取出对象池中的对象
             clientPeer.Clientsocket = e.AcceptSocket;
 
+            if(clientPeer.Clientsocket == null)
+            {
+                return;
+            }
+            Console.WriteLine("客户端连接成功:" + clientPeer.Clientsocket.RemoteEndPoint);
             //开始接受数据
             startReceive(clientPeer);
 
@@ -118,7 +145,6 @@ namespace ChcServer
             startAccept(e);//递归调用，处理其他连接  
         }
         #endregion
-
 
         #region 接受数据
         /// <summary>
@@ -132,6 +158,8 @@ namespace ChcServer
                 //clientPeer.ReceiveArgs.Completed += receive_Complateed;//为异步事件注册方法
 
                 //开始异步接受数据
+                
+
                 bool result = clientPeer.Clientsocket.ReceiveAsync(clientPeer.ReceiveArgs);
                 
                 if(result == false)
@@ -142,6 +170,7 @@ namespace ChcServer
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
+                throw;
             }
         }
 
@@ -165,12 +194,12 @@ namespace ChcServer
                 if(e.SocketError == SocketError.Success)
                 {
                     //正常断开
-                    //TODO
+                    DisConttect(clientPeer, "客户端正常断开");           
                 }
                 else
                 {
                     //异常断开
-                    //TODO
+                    DisConttect(clientPeer, e.SocketError.ToString());
                 }
             }
         }
@@ -187,17 +216,49 @@ namespace ChcServer
         /// <summary>
         /// 一个数据包解析完成后的回调方法
         /// </summary>
-        /// <param name="clientPeer"></param>
-        /// <param name="value"></param>
-        private void PacketReceiveComplatedEvent(ClientPeer clientPeer, SocketMgr value)
+        /// <param name="clientPeer">连接对象</param>
+        /// <param name="value">消息</param>
+        private void PacketReceiveComplatedEvent(ClientPeer clientPeer, SocketMsg value)
         {
-            //TODO
+            //给应用层数据，让其使用
+            application.OnReceive(clientPeer, value);
             throw new NotImplementedException();
         }
         #endregion
 
         #region 断开连接
 
+        /// <summary>
+        /// 断开连接
+        /// </summary>
+        /// <param name="clientPeer">客户端连接对象</param>
+        /// <param name="reason">断开原因</param>
+        public void DisConttect(ClientPeer clientPeer,string reason)
+        {
+            try
+            {
+
+                if(clientPeer == null)
+                {
+                    Console.WriteLine("服务器断开连接,原因:"+ "连接对象为空，无法断开连接");
+                    throw new Exception("连接对象为空，无法断开连接");
+                }
+                Console.WriteLine("服务器断开连接，原因:" + reason);
+
+                
+                clientPeer.Disconnect();//客户端自身处理断开操作
+                clientPeerPool.EnqueuePool(clientPeer);//回收客户端连接对象
+
+                //应用层断开连接
+                application.OnDisConnect(clientPeer);
+
+                semaphore.Release();//释放信号量
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
         #endregion
 
         #region 发送数据

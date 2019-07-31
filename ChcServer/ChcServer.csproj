@@ -44,9 +44,14 @@
     <Compile Include="ClientPeer.cs" />
     <Compile Include="ClientPeerPool.cs" />
     <Compile Include="EncodeTool.cs" />
+    <Compile Include="IGameApplication.cs" />
     <Compile Include="ServerPeer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SocketMgr.cs" />
+    <Compile Include="SocketMsg.cs" />
+    <Compile Include="Util\Concurrent\ConcurrentInt.cs" />
+    <Compile Include="Util\Concurrent\SingleExecute.cs" />
+    <Compile Include="Util\MyTimer\TimerManager.cs" />
+    <Compile Include="Util\MyTimer\TimerModle.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

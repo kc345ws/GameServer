@@ -9,7 +9,7 @@ namespace ChcServer
     /// <summary>
     /// 网络消息传递类
     /// </summary>
-    public class SocketMgr
+    public class SocketMsg
     {
         /// <summary>
         /// 操作码
@@ -26,12 +26,12 @@ namespace ChcServer
         /// </summary>
         public object Value { get; set; }
 
-        public SocketMgr()
+        public SocketMsg()
         {
 
         }
 
-        public SocketMgr(int opcode , int subcode , int value)
+        public SocketMsg(int opcode , int subcode , object value)
         {
             OpCode = opcode;
             SubCode = subcode;

@@ -14,7 +14,11 @@ namespace GameServer
     {
         static void Main(string[] args)
         {
-            
+            ServerPeer server = new ServerPeer();
+            server.SetApplication(new NetMsgCenter());
+            server.Start(59800, 100);
+
+            Console.ReadKey();
         }
     }
 }

@@ -17,7 +17,7 @@ namespace ChcServer
     {
         #region 粘包拆包问题解决
         /// <summary>
-        /// 构造消息体 : 消息体 + 消息尾
+        /// 构造消息体 : 消息头 + 消息尾
         /// 消息头 : 数据长度(int类型4字节)  消息尾 : 数据
         /// </summary>
         /// <param name="data">原数据</param>
@@ -82,7 +82,7 @@ namespace ChcServer
         /// </summary>
         /// <param name="mgr"></param>
         /// <returns></returns>
-        public static byte[] EncodeSocketMgr(SocketMgr mgr)
+        public static byte[] EncodeSocketMgr(SocketMsg mgr)
         {
             using (MemoryStream ms = new MemoryStream())
             {
@@ -105,7 +105,7 @@ namespace ChcServer
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static SocketMgr DeCodeSocketMgr(byte[] data)
+        public static SocketMsg DeCodeSocketMgr(byte[] data)
         {
             using (MemoryStream ms = new MemoryStream(data))
             {
@@ -118,7 +118,7 @@ namespace ChcServer
                         //如果还有剩余数据
                         object value = DecodeObj(br.ReadBytes((int)(ms.Length - ms.Position)));
                     }
-                    SocketMgr socketMgr = new SocketMgr();
+                    SocketMsg socketMgr = new SocketMsg();
                     socketMgr.OpCode = OpCode;
                     socketMgr.SubCode = SubCode;
                     //socketMgr.Value
