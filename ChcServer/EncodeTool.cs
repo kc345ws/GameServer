@@ -113,15 +113,19 @@ namespace ChcServer
                 {
                     int OpCode = br.ReadInt32();
                     int SubCode = br.ReadInt32();
-                    if(ms.Length > ms.Position)
-                    {
-                        //如果还有剩余数据
-                        object value = DecodeObj(br.ReadBytes((int)(ms.Length - ms.Position)));
-                    }
+
                     SocketMsg socketMgr = new SocketMsg();
                     socketMgr.OpCode = OpCode;
                     socketMgr.SubCode = SubCode;
-                    //socketMgr.Value
+
+                    if (ms.Length > ms.Position)
+                    {
+                        //如果还有剩余数据
+                        object value = DecodeObj(br.ReadBytes((int)(ms.Length - ms.Position)));
+                        socketMgr.Value = value;
+                    }
+
+
                     return socketMgr;
                 }
             }

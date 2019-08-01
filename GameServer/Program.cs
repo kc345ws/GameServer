@@ -18,6 +18,7 @@ namespace GameServer
             server.SetApplication(new NetMsgCenter());
             server.Start(59800, 100);
 
+
             Console.ReadKey();
         }
     }

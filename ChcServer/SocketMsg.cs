@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace ChcServer
 {
     /// <summary>
-    /// 网络消息传递类
+    /// 网络消息类封装
     /// </summary>
     public class SocketMsg
     {

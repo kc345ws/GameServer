@@ -31,7 +31,7 @@ namespace ChcServer
         /// <param name="clientPeer"></param>
         /// <param name="value"></param>
         public delegate void ReceiveComplated(ClientPeer clientPeer, SocketMsg value);
-        public event ReceiveComplated ReceiveComplatedEvent;
+        public ReceiveComplated ReceiveComplatedEvent;
 
         /// <summary>
         /// 防止并发接收操作的信号量
