@@ -4,24 +4,24 @@ using System.Linq;
 using System.Text;
 
 
-namespace Protocol.Models
+namespace Protocol.Dto
 {
     /// <summary>
-    /// 帐号模型
+    /// 帐号数据传输对象
     /// </summary>
-    /// 
+    
     [Serializable]
-    public class AccountModle
+    public class AccountDto
     {
         public string Account { get; set; }
         public string Password { get; set; }
 
-        public AccountModle()
+        public AccountDto()
         {
 
         }
 
-        public AccountModle(string account , string pwd)
+        public AccountDto(string account , string pwd)
         {
             Account = account;
             Password = pwd;

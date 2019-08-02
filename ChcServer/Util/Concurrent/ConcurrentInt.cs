@@ -9,7 +9,7 @@ namespace ChcServer.Util.Concurrent
     /// <summary>
     /// 线程安全的int类型
     /// </summary>
-    class ConcurrentInt
+    public class ConcurrentInt
     {
         private int value;
         public ConcurrentInt(int value)

@@ -16,14 +16,30 @@ namespace ChcServer.Util.Concurrent
     /// 单线程池
     /// </summary>
 
-    class SingleExecute
+    public class SingleExecute
     {
         /// <summary>
         /// 互斥量
         /// </summary>
-        public Mutex mutex;
+        public Mutex mutex = new Mutex();
 
-        public SingleExecute()
+        private static SingleExecute instance = new SingleExecute();
+        public static SingleExecute Instance
+        {
+            get
+            {
+                lock (instance)
+                {
+                    if(instance == null)
+                    {
+                        instance = new SingleExecute();
+                    }
+                    return instance;
+                }
+            }
+        }
+
+        private SingleExecute()
         {
             mutex = new Mutex();
         }

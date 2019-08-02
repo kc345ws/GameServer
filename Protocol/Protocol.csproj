@@ -44,7 +44,7 @@
   <ItemGroup>
     <Compile Include="Code\AccountCode.cs" />
     <Compile Include="Code\OpCode.cs" />
-    <Compile Include="Models\AccountModle.cs" />
+    <Compile Include="Dto\AccountDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

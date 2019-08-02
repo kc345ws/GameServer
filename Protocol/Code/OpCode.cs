@@ -7,7 +7,7 @@ using System.Text;
 namespace Protocol.Code
 {
     /// <summary>
-    /// 操作码 服务器与客户端共用
+    /// 操作码 服务器与客户端共用0-100
     /// </summary>
     public static class OpCode
     {
