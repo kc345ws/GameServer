@@ -14,11 +14,18 @@ namespace GameServer.Logic
     /// <summary>
     /// 帐号逻辑层模块
     /// </summary>
+    /// 
+    
+
     public class AccountHandler : IHandler
     {
         ClientPeer clientPeer = null;
 
-        
+        public AccountHandler()
+        {
+            Program.Server.accountOfflineEvent += OnDisConnect;
+        }
+
         /// <summary>
         /// 断开连接时玩家自动下线
         /// </summary>
@@ -28,6 +35,7 @@ namespace GameServer.Logic
             if (AccountCache.Instance.IsOnline(clientPeer))
             {
                 AccountCache.Instance.OffLine(clientPeer);
+                Console.WriteLine("玩家下线:"+clientPeer.Clientsocket.RemoteEndPoint);
             }
         }
 
@@ -122,8 +130,11 @@ namespace GameServer.Logic
                 }
                 else
                 {
+                    //玩家上线
                     AccountCache.Instance.Online(acc, clientPeer);
-                    clientPeer.StartSend(OpCode.ACCOUNT, AccountCode.LOGIN_SRES, "登陆成功");
+                    Console.WriteLine("玩家" + acc + "上线");
+                    //登陆成功切换场景
+                    clientPeer.StartSend(AreoCode.SCENE, SceneCode.LOAD_SCENE, "登陆成功");
                 }
             });
         }

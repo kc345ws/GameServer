@@ -43,8 +43,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Code\AccountCode.cs" />
+    <Compile Include="Code\AreoCode.cs" />
     <Compile Include="Code\OpCode.cs" />
+    <Compile Include="Code\SceneCode.cs" />
     <Compile Include="Dto\AccountDto.cs" />
+    <Compile Include="Dto\SceneLoadMsg.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

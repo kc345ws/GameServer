@@ -10,13 +10,15 @@ namespace GameServer
     /// <summary>
     /// 应用层
     /// </summary>
-    class Program
+    public class Program
     {
+        public static ServerPeer Server { get; private set; }
         static void Main(string[] args)
         {
-            ServerPeer server = new ServerPeer();
-            server.SetApplication(new NetMsgCenter());
-            server.Start(59800, 100);
+            
+            Server = new ServerPeer();
+            Server.SetApplication(new NetMsgCenter());
+            Server.Start(59800, 100);
 
 
             Console.ReadKey();
