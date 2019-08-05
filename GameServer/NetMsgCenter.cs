@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+
 using ChcServer;
 using GameServer.Logic;
 using Protocol.Code;
@@ -17,9 +17,11 @@ namespace GameServer
     {
         private IHandler account = new AccountHandler();
         
+        //断开连接
         public void OnDisConnect(ClientPeer clientPeer)
         {
-            
+            account.OnDisConnect(clientPeer);
+            UserHandler.Instance.OnDisConnect(clientPeer);
         }
 
         public void OnReceive(ClientPeer clientPeer, SocketMsg msg)
@@ -28,6 +30,10 @@ namespace GameServer
             {
                 case OpCode.ACCOUNT:
                     account.OnReceive(clientPeer, msg.SubCode, msg.Value);
+                    break;
+
+                case OpCode.USER:
+                    UserHandler.Instance.OnReceive(clientPeer, msg.SubCode, msg.Value);
                     break;
             }
         }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+
 
 namespace ChcServer
 {
@@ -32,6 +32,13 @@ namespace ChcServer
         }
 
         public SocketMsg(int opcode , int subcode , object value)
+        {
+            OpCode = opcode;
+            SubCode = subcode;
+            Value = value;
+        }
+
+        public void Change(int opcode, int subcode, object value)
         {
             OpCode = opcode;
             SubCode = subcode;

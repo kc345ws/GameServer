@@ -16,6 +16,9 @@ namespace Protocol.Code
         /// </summary>
         public const int ACCOUNT = 0;
 
-
+        /// <summary>
+        /// 角色模块
+        /// </summary>
+        public const int USER = 1;
     }
 }

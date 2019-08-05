@@ -4,7 +4,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Timers;
 
 namespace ChcServer.Util.MyTimer
@@ -37,7 +36,7 @@ namespace ChcServer.Util.MyTimer
         /// 储存任务的线程安全字典 任务id 和 任务模型的映射
         /// </summary>
         private ConcurrentDictionary<int , TimerModle> idTimerDic = null;
-
+        //private Dictionary<int , TimerModle> idTimerDic = null;
         /// <summary>
         /// 要移除的任务id列表
         /// </summary>
@@ -52,6 +51,7 @@ namespace ChcServer.Util.MyTimer
         {
             concurrentID = new ConcurrentInt(-1);
             idTimerDic = new ConcurrentDictionary<int, TimerModle>();
+
             removelistId = new List<int>();
             timer = new Timer(1000);
             timer.Elapsed += Timer_Elapsed;//计时器达到时间间隔后触发的事件

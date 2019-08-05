@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+
 using ChcServer;
 using Protocol.Code;
 using Protocol.Dto;
@@ -21,9 +21,11 @@ namespace GameServer.Logic
     {
         ClientPeer clientPeer = null;
 
+        private SocketMsg socketMsg = new SocketMsg();
+
         public AccountHandler()
         {
-            Program.Server.accountOfflineEvent += OnDisConnect;
+            //Program.Server.accountOfflineEvent += OnDisConnect;
         }
 
         /// <summary>
@@ -47,15 +49,15 @@ namespace GameServer.Logic
             {
                 case AccountCode.LOGIN_CREQ:
                     account = value as AccountDto;
-                    Console.WriteLine(account.Account);
-                    Console.WriteLine(account.Password);
+                    //Console.WriteLine(account.Account);
+                    //Console.WriteLine(account.Password);
                     login(account.Account, account.Password);
                     break;
 
                 case AccountCode.REGISTER_CREQ:
                     account = value as AccountDto;
-                    Console.WriteLine(account.Account);
-                    Console.WriteLine(account.Password);
+                    //Console.WriteLine(account.Account);
+                   // Console.WriteLine(account.Password);
                     register(account.Account, account.Password);
                     break;
             }
@@ -95,6 +97,7 @@ namespace GameServer.Logic
                 {
                     AccountCache.Instance.Create(account, pwd);
                     clientPeer.StartSend(OpCode.ACCOUNT, AccountCode.REGISTER_SRES, "注册成功");
+                    Console.WriteLine("玩家:" + account + "注册成功");
                 }
             });  
         }
@@ -132,9 +135,9 @@ namespace GameServer.Logic
                 {
                     //玩家上线
                     AccountCache.Instance.Online(acc, clientPeer);
-                    Console.WriteLine("玩家" + acc + "上线");
+                    Console.WriteLine("玩家:" + acc + "上线");
                     //登陆成功切换场景
-                    clientPeer.StartSend(AreoCode.SCENE, SceneCode.LOAD_SCENE, "登陆成功");
+                    clientPeer.StartSend(OpCode.ACCOUNT, AccountCode.LOGIN_SRES, "登陆成功");
                 }
             });
         }

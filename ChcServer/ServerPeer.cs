@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+
 
 using System.Net;
 using System.Net.Sockets;
@@ -12,13 +12,13 @@ using System.Threading;
 
 namespace ChcServer
 {
-    public delegate void AccountOfflineDelegate(ClientPeer clientPeer);//帐号下线
+    //public delegate void AccountOfflineDelegate(ClientPeer clientPeer);//帐号下线
     /// <summary>
     /// 服务器端封装
     /// </summary>
     public class ServerPeer
     {
-        public event AccountOfflineDelegate accountOfflineEvent;
+        //public event AccountOfflineDelegate accountOfflineEvent;
         #region 变量及构造函数
         /// <summary>
         /// 服务器端套接字
@@ -258,14 +258,17 @@ namespace ChcServer
                     Console.WriteLine(clientPeer.Clientsocket.RemoteEndPoint.ToString() + "客户端断开连接，原因:" + reason);
                 }
                 //账号下线
-                accountOfflineEvent?.Invoke(clientPeer);
-
-
-                clientPeer.Disconnect();//客户端自身处理断开操作
-                clientPeerPool.EnqueuePool(clientPeer);//回收客户端连接对象
+                //accountOfflineEvent?.Invoke(clientPeer);
 
                 //应用层断开连接
                 application.OnDisConnect(clientPeer);
+
+                clientPeer.Disconnect();//客户端自身处理断开操作
+
+
+                clientPeerPool.EnqueuePool(clientPeer);//回收客户端连接对象
+
+                
 
                 semaphore.Release();//释放信号量
             }
