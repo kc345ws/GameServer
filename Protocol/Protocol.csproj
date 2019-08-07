@@ -44,10 +44,13 @@
   <ItemGroup>
     <Compile Include="Code\AccountCode.cs" />
     <Compile Include="Code\AreoCode.cs" />
+    <Compile Include="Code\MatchCode.cs" />
     <Compile Include="Code\OpCode.cs" />
     <Compile Include="Code\SceneCode.cs" />
     <Compile Include="Code\UserCode.cs" />
     <Compile Include="Dto\AccountDto.cs" />
+    <Compile Include="Dto\Fight\CardDto.cs" />
+    <Compile Include="Dto\MatchRoomDto.cs" />
     <Compile Include="Dto\SceneLoadMsg.cs" />
     <Compile Include="Dto\UserDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

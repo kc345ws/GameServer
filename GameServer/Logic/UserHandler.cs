@@ -124,7 +124,7 @@ namespace GameServer.Logic
                       //给客户端发送自己的角色信息
                       //通过账号ID获取角色信息
                       UserModel model = UserCache.Instance.GetModelByAccountId(accountId);
-                      UserDto dto = new UserDto(model.Name, model.Been, model.WinCount, model.LoseCount, model.RunCount, model.Lv, model.Exp);
+                      UserDto dto = new UserDto(model.Id,model.Name, model.Been, model.WinCount, model.LoseCount, model.RunCount, model.Lv, model.Exp);
                       client.StartSend(OpCode.USER, UserCode.GET_USER_SRES, dto);//"获取成功"
                     Console.WriteLine("玩家:" + client.Clientsocket.RemoteEndPoint + "的角色" + model.Name + "上线");
                   }

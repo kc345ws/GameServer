@@ -20,8 +20,9 @@ namespace GameServer
         //断开连接
         public void OnDisConnect(ClientPeer clientPeer)
         {
-            account.OnDisConnect(clientPeer);
+            MatchHandler.Instance.OnDisConnect(clientPeer);
             UserHandler.Instance.OnDisConnect(clientPeer);
+            account.OnDisConnect(clientPeer);    
         }
 
         public void OnReceive(ClientPeer clientPeer, SocketMsg msg)
@@ -34,6 +35,10 @@ namespace GameServer
 
                 case OpCode.USER:
                     UserHandler.Instance.OnReceive(clientPeer, msg.SubCode, msg.Value);
+                    break;
+
+                case OpCode.MATCH:
+                    MatchHandler.Instance.OnReceive(clientPeer, msg.SubCode, msg.Value);
                     break;
             }
         }

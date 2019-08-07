@@ -13,6 +13,7 @@ namespace Protocol.Dto
     [Serializable]
     public class UserDto
     {
+        public int ID;//角色ID
         public string Name;//角色名字
         public int Been;//豆子的数量
 
@@ -24,8 +25,9 @@ namespace Protocol.Dto
         public int Exp;//经验
 
 
-        public UserDto(string name,int benn,int win , int lose, int run, int lv , int exp)
+        public UserDto(int id , string name,int benn,int win , int lose, int run, int lv , int exp)
         {
+            ID = id;
             this.Name = name;
             this.Been = benn;
             this.WinCount = win;

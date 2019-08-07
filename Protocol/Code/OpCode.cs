@@ -20,5 +20,10 @@ namespace Protocol.Code
         /// 角色模块
         /// </summary>
         public const int USER = 1;
+
+        /// <summary>
+        /// 匹配模块
+        /// </summary>
+        public const int MATCH = 2;
     }
 }

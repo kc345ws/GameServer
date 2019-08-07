@@ -146,6 +146,15 @@ namespace ChcServer
             byte[] data = EncodeTool.EncodeSocketMgr(mgr);
             byte[] packet = EncodeTool.EncodeMessage(data);//构造数据包
 
+            StartSend(packet);
+        }
+
+        /// <summary>
+        /// 广播消息时的性能优化处理
+        /// </summary>
+        /// <param name="packet"></param>
+        public void StartSend(byte[] packet)
+        {
             sendQueue.Enqueue(packet);
 
             if (!isSendProcess)
