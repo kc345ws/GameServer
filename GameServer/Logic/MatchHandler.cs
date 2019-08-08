@@ -13,12 +13,16 @@ using GameServer.Model;
 
 namespace GameServer.Logic
 {
+    public delegate void StartGameDelegate();
     /// <summary>
     /// 匹配逻辑层
     /// </summary>
     public class MatchHandler : IHandler
     {
+        public event StartGameDelegate StartGameEvent;
+
         private static MatchHandler instance = new MatchHandler();
+
         public static MatchHandler Instance
         {
             get
@@ -174,7 +178,12 @@ namespace GameServer.Logic
                     //如果所有人都准备了则开始游戏
                     if (room.IsAllReady())
                     {
-                        //TODO开始游戏场景
+                        if (StartGameEvent != null)
+                        {
+                            StartGameEvent();
+                        }
+
+                        //开始游戏场景
                         room.Broadcast(OpCode.MATCH, MatchCode.START_GAME_BOD, "0");
                         //广播消息通知房间内所有人开始游戏
                         MatchCache.Instance.Destory(room);//销毁匹配房间重用

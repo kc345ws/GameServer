@@ -25,5 +25,15 @@ namespace Protocol.Code
         /// 匹配模块
         /// </summary>
         public const int MATCH = 2;
+
+        /// <summary>
+        /// 聊天模块
+        /// </summary>
+        public const int CHAT = 3;
+
+        /// <summary>
+        /// 战斗模块
+        /// </summary>
+        public const int FIGHT = 4;
     }
 }
