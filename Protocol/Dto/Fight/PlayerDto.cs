@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Protocol.Constants;
 
 namespace Protocol.Dto.Fight
 {
@@ -10,14 +11,17 @@ namespace Protocol.Dto.Fight
     {
         public int UserID { get; private set; }
 
-        public int Identity { get; private set; }
+        public int Identity { get; set; }
 
+        /// <summary>
+        /// 玩家手牌
+        /// </summary>
         public List<CardDto> cardDtos { get; private set; }
 
         public PlayerDto(int id)
         {
             UserID = id;
-            Identity = -1;
+            Identity = PlayerIdentity.FRAMER;
             cardDtos = new List<CardDto>();
         }
 

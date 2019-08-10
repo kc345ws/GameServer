@@ -36,7 +36,17 @@ namespace GameServer.Cache.Fight
         /// </summary>
         public int LastType { get; set; }
 
+
         public RoundModle()
+        {
+            BiggestUid = -1;
+            CurrentUid = -1;
+            LastType = -1;
+            LastLength = -1;
+            LastWeight = -1;
+        }
+
+        public void Init()
         {
             BiggestUid = -1;
             CurrentUid = -1;
@@ -56,7 +66,7 @@ namespace GameServer.Cache.Fight
         }
 
         /// <summary>
-        /// 改变最大出牌者
+        /// 改变当前最大出牌者,更新回合数据
         /// </summary>
         /// <param name="uid"></param>
         /// <param name="length"></param>
@@ -65,7 +75,6 @@ namespace GameServer.Cache.Fight
         public void Change(int uid, int length,int weight,int type)
         {
             BiggestUid = uid;
-            CurrentUid = uid;
             LastLength = length;
             LastWeight = weight;
             LastType = type;

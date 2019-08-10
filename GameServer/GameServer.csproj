@@ -49,6 +49,7 @@
     <Compile Include="Cache\AccountCache.cs" />
     <Compile Include="Cache\Fight\CardLibrary.cs" />
     <Compile Include="Cache\Fight\FightRoom.cs" />
+    <Compile Include="Cache\Fight\FightRoomCache.cs" />
     <Compile Include="Cache\Fight\RoundModle.cs" />
     <Compile Include="Cache\Match\MatchCache.cs" />
     <Compile Include="Cache\Match\MatchRoom.cs" />

@@ -13,7 +13,7 @@ using GameServer.Model;
 
 namespace GameServer.Logic
 {
-    public delegate void StartGameDelegate();
+    public delegate void StartGameDelegate(List<int> uidList);
     /// <summary>
     /// 匹配逻辑层
     /// </summary>
@@ -175,12 +175,13 @@ namespace GameServer.Logic
                     //通知房间内除了自己以外的人，自己准备了
                     room.Broadcast(OpCode.MATCH, MatchCode.READY_BOD, uid, clientPeer);
                     Console.WriteLine("玩家:" + uid + "在匹配房间:" + room.ID + "准备了");
+                    
                     //如果所有人都准备了则开始游戏
                     if (room.IsAllReady())
                     {
                         if (StartGameEvent != null)
                         {
-                            StartGameEvent();
+                            StartGameEvent(room.ReadyUidlist);
                         }
 
                         //开始游戏场景

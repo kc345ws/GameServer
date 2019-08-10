@@ -95,5 +95,15 @@ namespace GameServer.Cache.Fight
                 cardDtos.Enqueue(item);
             }
         }
+
+        /// <summary>
+        /// 发牌
+        /// </summary>
+        /// <returns></returns>
+        public CardDto DispatchCard()
+        {
+            return cardDtos.Dequeue();
+        }
+
     }
 }
