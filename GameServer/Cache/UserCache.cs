@@ -48,6 +48,14 @@ namespace GameServer.Cache
         ConcurrentInt id = new ConcurrentInt(-1);
 
         /// <summary>
+        /// 更新角色信息
+        /// </summary>
+        public void Update(UserModel um)
+        {
+            idModelDict[um.Id] = um;
+        }
+
+        /// <summary>
         /// 创建角色
         /// </summary>
         /// <param name="name">角色名</param>

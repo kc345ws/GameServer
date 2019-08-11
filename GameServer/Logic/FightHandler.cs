@@ -9,6 +9,7 @@ using GameServer.Cache;
 using Protocol.Code;
 using Protocol.Dto.Fight;
 using ChcServer.Util.Concurrent;
+using GameServer.Model;
 
 namespace GameServer.Logic
 {
@@ -37,7 +38,7 @@ namespace GameServer.Logic
 
         public void OnDisConnect(ClientPeer clientPeer)
         {
-
+            processLeave(clientPeer);
         }
 
         public void OnReceive(ClientPeer clientPeer, int subcode, object value)
@@ -51,7 +52,66 @@ namespace GameServer.Logic
                 case FightCode.DEAL_CREQ:
                     processdeal(clientPeer, value as DealDto);
                     break;
+
+                case FightCode.PASS_CREQ:
+                    processPass(clientPeer);
+                    break;
             }
+        }
+
+        private void processLeave(ClientPeer clientPeer)
+        {
+            SingleExecute.Instance.processSingle(
+                () =>
+                {
+                    if (!UserCache.Instance.IsOnline(clientPeer))
+                    {
+                        return;
+                    }
+                    int uid = UserCache.Instance.GetId(clientPeer);
+
+                    FightRoom fightRoom = FightRoomCache.Instance.GetRoomByUid(uid);
+                    PlayerDto playerDto = fightRoom.GetPlayerDto(uid);
+
+                    fightRoom.LeavePlayerDtos.Add(playerDto);
+                    fightRoom.Leave(clientPeer);
+
+                    if(fightRoom.LeavePlayerDtos.Count == 3)
+                    {
+                        //所有玩家都离开了
+                        FightRoomCache.Instance.Destroy(fightRoom.ID);
+                    }
+                }
+                );
+        }
+
+        private void processPass(ClientPeer clientPeer)
+        {
+            SingleExecute.Instance.processSingle(
+                () =>
+                {
+                    if (!UserCache.Instance.IsOnline(clientPeer))
+                    {
+                        return;
+                    }
+                    int uid = UserCache.Instance.GetId(clientPeer);
+
+                    FightRoom fightRoom = FightRoomCache.Instance.GetRoomByUid(uid);
+                    PlayerDto playerDto = fightRoom.GetPlayerDto(uid);
+
+                    if(fightRoom.roundModle.BiggestUid == playerDto.UserID)
+                    {
+                        clientPeer.StartSend(OpCode.FIGHT, FightCode.PASS_SRES, false);
+                        //最大出牌者不能不出
+                        return;
+                    }
+                    else
+                    {
+                        turn(fightRoom);//轮换出牌
+                        clientPeer.StartSend(OpCode.FIGHT, FightCode.PASS_SRES, true);
+                    }
+                }
+                );
         }
 
         private void processdeal(ClientPeer client,DealDto dealDto)
@@ -92,18 +152,110 @@ namespace GameServer.Logic
                         List<CardDto> cardlist = fightRoom.GetUserCard(uid);
                         if(cardlist.Count == 0)
                         {
-                            //TODO 若手牌发完则游戏结束
-                            fightRoom.Broadcast(OpCode.FIGHT, FightCode.GAME_OVER_SBOD, true);
+                            //若手牌发完则游戏结束
+                            gameover(fightRoom, uid);
+                            //fightRoom.Broadcast(OpCode.FIGHT, FightCode.GAME_OVER_SBOD, true);
                         }
                         else
                         {
-                            //TODO 轮换出牌
+                            //轮换出牌
+                            turn(fightRoom);
                         }
                     }
                 }
                 );
         }
 
+        /// <summary>
+        /// 转换出牌
+        /// </summary>
+        private void turn(FightRoom fightRoom)
+        {
+            int nextuid = fightRoom.Turn();
+            if (fightRoom.IsOffline(nextuid))
+            {
+                //如果下一个玩家离线
+                //递归找到一个在线的玩家
+                turn(fightRoom);
+            }
+            else
+            {
+                //通知房间内的房间下一个该出牌的玩家
+                fightRoom.Broadcast(OpCode.FIGHT, FightCode.DEAL_SBOD, nextuid);
+            }
+        }
+
+        private void gameover(FightRoom fightRoom , int winuid)
+        {
+            PlayerDto playerDto = fightRoom.GetPlayerDto(winuid);
+            int winIdentity = playerDto.Identity;
+            List<PlayerDto> winList = fightRoom.GetSameIdentityPlayer(winIdentity);
+            List<PlayerDto> loseList = fightRoom.GetDiffIdentityPlayer(winIdentity);
+            int winbeen = fightRoom.Multiple * 100;
+            int losebeen = fightRoom.Multiple * 100 * 2;
+            int runbeen = fightRoom.Multiple * 100  * 3;
+
+            //给胜利玩家增加
+            for (int i = 0; i < winList.Count; i++)
+            {
+                ClientPeer client = UserCache.Instance.GetClientPeer(winList[i].UserID);
+                UserModel um = UserCache.Instance.GetModelByClientPeer(client);
+                
+                if (!fightRoom.LeavePlayerDtos.Contains(winList[i]))
+                {
+                    //如果玩家没有中途离开
+                    um.Been += winbeen;
+                    um.Exp += 20;
+                    if(um.Exp >= 100)
+                    {
+                        um.Exp = 0;
+                        um.Lv++;
+                    }
+                    um.WinCount++;
+                    UserCache.Instance.Update(um);
+                }
+            }
+
+            for(int i = 0; i < loseList.Count; i++)
+            {
+                ClientPeer client = UserCache.Instance.GetClientPeer(loseList[i].UserID);
+                UserModel um = UserCache.Instance.GetModelByClientPeer(client);
+
+                if (!fightRoom.LeavePlayerDtos.Contains(loseList[i]))
+                {
+                    //如果玩家没有中途离开
+                    um.Been -= losebeen;
+                    um.Exp += 10;
+                    if (um.Exp >= 100)
+                    {
+                        um.Exp = 0;
+                        um.Lv++;
+                    }
+                    um.LoseCount++;
+                    UserCache.Instance.Update(um);
+                }
+            }
+
+            for(int i = 0; i < fightRoom.LeavePlayerDtos.Count; i++)
+            {
+                //PlayerDto runplayer = fightRoom.LeavePlayerDtos[i];
+                ClientPeer client = UserCache.Instance.GetClientPeer(fightRoom.LeavePlayerDtos[i].UserID);
+                UserModel um = UserCache.Instance.GetModelByClientPeer(client);
+                um.Been -= runbeen;
+                um.LoseCount++;
+                um.RunCount++;
+                UserCache.Instance.Update(um);
+            }
+
+            OverDto overDto = new OverDto(winIdentity, winList, winbeen);
+            fightRoom.Broadcast(OpCode.FIGHT, FightCode.GAME_OVER_SBOD, overDto);
+        }
+
+        /// <summary>
+        /// 抢地主
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="active"></param>
         private void grabLandlord(ClientPeer client, bool active)
         {
             SingleExecute.Instance.processSingle(
@@ -155,7 +307,9 @@ namespace GameServer.Logic
 
                     //叫地主
                     PlayerDto playerDto = fightRoom.GetFirstPlayer();//由第一个进入房间的首先叫地主
-                    fightRoom.Broadcast(OpCode.FIGHT, FightCode.GRAB_LANDLORD_SBOD, playerDto.UserID);
+                    //fightRoom.Broadcast(OpCode.FIGHT, FightCode.GRAB_LANDLORD_SBOD, playerDto.UserID);
+                    //轮到第一个玩家叫地主
+                    fightRoom.Broadcast(OpCode.FIGHT, FightCode.TURN_LANDLORD_SBOD, playerDto.UserID);
                 }
                 );
             

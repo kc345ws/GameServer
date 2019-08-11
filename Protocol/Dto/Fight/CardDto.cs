@@ -8,6 +8,8 @@ namespace Protocol.Dto.Fight
     /// <summary>
     /// 卡牌数据传输对象
     /// </summary>
+    /// 
+    [Serializable]
     public class CardDto
     {
         public int ID;

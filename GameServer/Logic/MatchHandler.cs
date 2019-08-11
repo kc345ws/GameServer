@@ -179,6 +179,8 @@ namespace GameServer.Logic
                     //如果所有人都准备了则开始游戏
                     if (room.IsAllReady())
                     {
+                        FightHandler.Instance.ToString();
+
                         if (StartGameEvent != null)
                         {
                             StartGameEvent(room.ReadyUidlist);

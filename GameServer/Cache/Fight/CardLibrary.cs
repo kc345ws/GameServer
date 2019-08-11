@@ -13,7 +13,7 @@ namespace GameServer.Cache.Fight
     /// </summary>
     public class CardLibrary
     {
-        public Queue<CardDto> cardDtos;
+        public Queue<CardDto> cardDtos = new Queue<CardDto>();
 
         private int CardId = 0;
 
@@ -67,6 +67,7 @@ namespace GameServer.Cache.Fight
             bool hasindex = false;
             for (int i = 0; i < 54; i++)
             {
+                shuffleCards.Add(new CardDto());
                 while (true)
                 {
                     Random random = new Random(Guid.NewGuid().GetHashCode());
@@ -82,10 +83,12 @@ namespace GameServer.Cache.Fight
                 }
             }
 
+
             foreach (var item in cardDtos)
             {
                 int index = indexqueue.Dequeue();
-                shuffleCards.Insert(index, item);
+                //shuffleCards.Insert(index, item);
+                shuffleCards[index] = item;
             }
 
             cardDtos.Clear();

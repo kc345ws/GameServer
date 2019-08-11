@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ChcServer;
+using GameServer.Model;
 using Protocol.Constants;
 using Protocol.Dto.Fight;
 
@@ -74,6 +75,37 @@ namespace GameServer.Cache.Fight
 
             roundModle.CurrentUid = nextuid;
             return nextuid;
+        }
+
+        /// <summary>
+        /// 玩家是否掉线
+        /// </summary>
+        /// <param name="uid"></param>
+        /// <returns></returns>
+        public bool IsOffline(int uid)
+        {
+            PlayerDto player = null;
+            foreach (var item in playerDtos)
+            {
+                if(item.UserID == uid)
+                {
+                    player = item;
+                    return LeavePlayerDtos.Contains(player);
+                }
+            }
+            return LeavePlayerDtos.Contains(player);
+        }
+
+        /// <summary>
+        /// 玩家中途离开
+        /// </summary>
+        /// <param name="uid"></param>
+        public void Leave(ClientPeer clientPeer)
+        {
+            UserModel userModel = UserCache.Instance.GetModelByClientPeer(clientPeer);
+            userModel.Been -= Multiple * 100;
+            userModel.RunCount++;
+            userModel.LoseCount++;
         }
 
         /// <summary>
@@ -308,6 +340,26 @@ namespace GameServer.Cache.Fight
             }
             return players;
         }
+
+        /// <summary>
+        /// 获取不同身份的玩家信息
+        /// </summary>
+        /// <param name="identity"></param>
+        /// <returns></returns>
+        public List<PlayerDto> GetDiffIdentityPlayer(int identity)
+        {
+            List<PlayerDto> players = new List<PlayerDto>();
+            foreach (var item in playerDtos)
+            {
+                if (item.Identity != identity)
+                {
+                    players.Add(item);
+                }
+            }
+            return players;
+        }
+
+
 
         /// <summary>
         /// 第一个进入房间的人第一个叫地主

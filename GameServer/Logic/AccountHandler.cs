@@ -86,13 +86,13 @@ namespace GameServer.Logic
                         clientPeer.StartSend(OpCode.ACCOUNT, AccountCode.REGISTER_SRES, "帐号或密码不能为空");
                     }
                 }
-                else if (pwd.Length < 6 || pwd.Length > 16)
+                /*else if (pwd.Length < 6 || pwd.Length > 16)
                 {
                     if (clientPeer != null)
                     {
                         clientPeer.StartSend(OpCode.ACCOUNT, AccountCode.REGISTER_SRES, "密码不能小于6位或大于16位");
                     }
-                }
+                }*/
                 else
                 {
                     AccountCache.Instance.Create(account, pwd);
