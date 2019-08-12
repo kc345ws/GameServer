@@ -72,6 +72,7 @@ namespace GameServer.Logic
                 case MatchCode.READY_CREQ:
                     ready(clientPeer);
                     break;
+
             }
         }
 

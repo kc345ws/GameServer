@@ -56,6 +56,10 @@ namespace GameServer.Logic
                 case FightCode.PASS_CREQ:
                     processPass(clientPeer);
                     break;
+
+                case FightCode.PLAYER_LEAVE_CREQ:
+                    processLeave(clientPeer);
+                    break;
             }
         }
 
@@ -69,6 +73,12 @@ namespace GameServer.Logic
                         return;
                     }
                     int uid = UserCache.Instance.GetId(clientPeer);
+
+                    if (!FightRoomCache.Instance.IsJoinFight(uid))
+                    {
+                        //如果没有进入战斗房间
+                        return;
+                    }
 
                     FightRoom fightRoom = FightRoomCache.Instance.GetRoomByUid(uid);
                     PlayerDto playerDto = fightRoom.GetPlayerDto(uid);
@@ -267,6 +277,7 @@ namespace GameServer.Logic
                     }
                     int uid = UserCache.Instance.GetId(client);
                     FightRoom fightRoom = FightRoomCache.Instance.GetRoomByUid(uid);
+
                     if (active)
                     {
                         //设置为地主

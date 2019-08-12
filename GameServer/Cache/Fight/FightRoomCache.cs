@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ChcServer.Util.Concurrent;
+using Protocol.Dto.Fight;
 
 namespace GameServer.Cache.Fight
 {
@@ -43,13 +44,32 @@ namespace GameServer.Cache.Fight
         /// </summary>
         private Queue<FightRoom> fightRoomQueue = new Queue<FightRoom>();
 
+        /// <summary>
+        /// 用户是否进入战斗房间
+        /// </summary>
+        /// <param name="uid"></param>
+        /// <returns></returns>
+        public bool IsJoinFight(int uid)
+        {
+            return uidRoomidDic.ContainsKey(uid);
+        }
+
 
         public FightRoom Create(List<int>uidList)
         {
             if(fightRoomQueue.Count > 0)
             {
                 //如果重用队列中有可用房间
-                return fightRoomQueue.Dequeue();
+                FightRoom fightRoom = fightRoomQueue.Dequeue();
+                foreach (var item in uidList)
+                {
+                    uidRoomidDic.Add(item, fightRoom.ID);
+
+                    PlayerDto playerDto = new PlayerDto(item);
+                    fightRoom.playerDtos.Add(playerDto);
+                }
+            
+                return fightRoom;
             }
             else
             {
@@ -58,7 +78,10 @@ namespace GameServer.Cache.Fight
 
                 foreach (var item in uidList)
                 {
-                    uidRoomidDic.Add(item, roomID.Get());
+                    if(!uidRoomidDic.ContainsKey(item))
+                    {
+                        uidRoomidDic.Add(item, roomID.Get());
+                    }
                 }
                 roomidModleDic.Add(roomID.Get(), fightRoom);
 
@@ -124,8 +147,16 @@ namespace GameServer.Cache.Fight
             fightRoom.cardLibrary.Init();//重新初始化牌库
             fightRoom.TableCards.Clear();
             fightRoom.roundModle.Init();//初始化回合管理器
+
+            for (int i = 0; i < fightRoom.playerDtos.Count; i++)
+            {
+                uidRoomidDic.Remove(fightRoom.playerDtos[i].UserID);
+            }
             fightRoom.playerDtos.Clear();
+
             fightRoom.LeavePlayerDtos.Clear();
+
+            
 
             fightRoomQueue.Enqueue(fightRoom);
         }

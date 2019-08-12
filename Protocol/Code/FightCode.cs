@@ -25,5 +25,7 @@ namespace Protocol.Code
 
         public const int GET_CARD_CREQ = 11;
         public const int GET_CARD_SRES = 12;
+
+        public const int PLAYER_LEAVE_CREQ = 13;//玩家离开房间
     }
 }

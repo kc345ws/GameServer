@@ -125,8 +125,14 @@ namespace GameServer.Cache
         /// <param name="id"></param>
         public void Online(ClientPeer client, int id)
         {
-            idClientDict.Add(id, client);
-            clientIdDict.Add(client, id);
+            if (!idClientDict.ContainsKey(id))
+            {
+                idClientDict.Add(id, client);
+            }
+            if (!clientIdDict.ContainsKey(client))
+            {
+                clientIdDict.Add(client, id);
+            }        
         }
 
         /// <summary>

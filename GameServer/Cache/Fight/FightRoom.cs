@@ -20,7 +20,7 @@ namespace GameServer.Cache.Fight
         /// <summary>
         /// 战斗房间中的玩家聊表
         /// </summary>
-        public List<PlayerDto> playerDtos { get; private set; }
+        public List<PlayerDto> playerDtos { get; set; }
 
         /// <summary>
         /// 中途离开的玩家，用于结算时对其进行惩罚

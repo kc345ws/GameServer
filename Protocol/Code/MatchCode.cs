@@ -27,6 +27,5 @@ namespace Protocol.Code
         //开始游戏
         public const int START_GAME_BOD = 706;//当匹配队列中的所有客户端都准备时，服务器向所有客户端发送开始游戏操作码
 
-
     }
 }

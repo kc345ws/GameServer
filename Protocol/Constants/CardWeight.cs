@@ -30,6 +30,21 @@ namespace Protocol.Constants
         public const int SMALLJOKER = 16;
         public const int BIGJOKER = 17;
 
+        public static void SortCard(ref List<CardDto> cardList, bool asc = true)//asc升序 des降序
+        {
+            cardList.Sort(delegate (CardDto a, CardDto b)
+            {
+                if (asc)
+                {
+                    return a.Weight.CompareTo(b.Weight);
+                }
+                else
+                {
+                    return a.Weight.CompareTo(b.Weight) * -1;
+                }
+            });
+        }
+
         public static string GetName(int weight)
         {
             switch (weight)

@@ -76,7 +76,7 @@ namespace GameServer.Cache.Fight
                     if (hasindex == false)
                     {
                         indexqueue.Enqueue(index);
-                        Console.WriteLine(index);
+                        //Console.WriteLine(index);
                         hasindex = true;
                         break;
                     }
