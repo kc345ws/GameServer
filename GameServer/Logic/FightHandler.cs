@@ -156,11 +156,16 @@ namespace GameServer.Logic
                     {
                         //向客户端发送发牌成功
                         client.StartSend(OpCode.FIGHT, FightCode.DEAL_SRES, true);
-                        //向客户端广播出牌信息
-                        fightRoom.Broadcast(OpCode.FIGHT, FightCode.DEAL_SBOD, dealDto);
+                        
+                        
 
                         List<CardDto> cardlist = fightRoom.GetUserCard(uid);
-                        if(cardlist.Count == 0)
+
+                        //玩家剩余手牌
+                        dealDto.remainCards = cardlist;
+                        //向客户端广播出牌信息
+                        fightRoom.Broadcast(OpCode.FIGHT, FightCode.DEAL_SBOD, dealDto);
+                        if (cardlist.Count == 0)
                         {
                             //若手牌发完则游戏结束
                             gameover(fightRoom, uid);
@@ -191,7 +196,7 @@ namespace GameServer.Logic
             else
             {
                 //通知房间内的房间下一个该出牌的玩家
-                fightRoom.Broadcast(OpCode.FIGHT, FightCode.DEAL_SBOD, nextuid);
+                fightRoom.Broadcast(OpCode.FIGHT, FightCode.TURN_DEAL_SBOD, nextuid);
             }
         }
 
@@ -285,6 +290,9 @@ namespace GameServer.Logic
                         //向每个客户端发送底牌信息以及谁抢了
                         LandLordDto landLordDto = new LandLordDto(uid, fightRoom.TableCards);
                         fightRoom.Broadcast(OpCode.FIGHT, FightCode.GRAB_LANDLORD_SBOD, landLordDto);
+
+                        //通知房间内所有玩家，该玩家进行出牌
+                        fightRoom.Broadcast(OpCode.FIGHT, FightCode.TURN_DEAL_SBOD, uid);
                     }
                     else
                     {

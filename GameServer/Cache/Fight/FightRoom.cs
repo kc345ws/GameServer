@@ -168,6 +168,10 @@ namespace GameServer.Cache.Fight
             {
                 candeal = true;
             }
+            else if(uid == roundModle.BiggestUid)
+            {
+                candeal = true;//如果是第一次出牌或者是最大出牌者
+            }
 
             if (candeal)
             {

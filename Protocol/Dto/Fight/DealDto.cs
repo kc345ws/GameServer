@@ -9,6 +9,8 @@ namespace Protocol.Dto.Fight
     /// <summary>
     /// 玩家出牌的数据传输对象
     /// </summary>
+    /// 
+    [Serializable]
     public class DealDto
     {
         /// <summary>
@@ -20,6 +22,8 @@ namespace Protocol.Dto.Fight
         /// 用户选中想要出的牌
         /// </summary>
         public List<CardDto> SelectCards;
+
+        public List<CardDto> remainCards;//剩余手牌
 
         public int Length;
         public int Weight;
@@ -38,10 +42,19 @@ namespace Protocol.Dto.Fight
         {
             UserID = uid;
             SelectCards = cardlist;
-            Weight = CardWeight.GetWeight(cardlist, Type);
             Type = CardType.GetType(cardlist);
+            Weight = CardWeight.GetWeight(cardlist, Type);      
             Length = cardlist.Count;
-            isRegular = Type != CardType.NONE;//类型不为空则合法
+
+            //类型不为空则合法
+            if (Type != CardType.NONE)
+            {
+                isRegular = true;
+            }
+            else
+            {
+                isRegular = false;
+            }
         }
     }
 }
