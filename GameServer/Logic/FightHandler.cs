@@ -140,7 +140,8 @@ namespace GameServer.Logic
                     if (fightRoom.LeavePlayerDtos.Contains(playerDto))
                     {
                         //如果玩家已经离开了
-                        //TODO 轮换出牌
+                        //轮换出牌
+                        turn(fightRoom);
                         return;
                     }
 

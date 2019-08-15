@@ -117,9 +117,13 @@ namespace GameServer.Logic
                           client.StartSend(OpCode.USER, UserCode.GET_USER_SRES, -2);//"没有创建角色 不能获取信息"
                           return;
                       }
-                      //代码执行到这里 就代表有角色
-                      //自动上线角色
-                      online(client);
+                    //代码执行到这里 就代表有角色
+                    //自动上线角色,判断是否在线防止重复在线
+                    if (!UserCache.Instance.IsOnline(client))
+                    {
+                        online(client);
+                    }
+                      
 
                       //给客户端发送自己的角色信息
                       //通过账号ID获取角色信息

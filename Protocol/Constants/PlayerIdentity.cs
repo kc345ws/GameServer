@@ -9,5 +9,17 @@ namespace Protocol.Constants
     {
         public const int FRAMER = 0;
         public const int LANDLORD = 1;
+
+        public string GetName(int identity)
+        {
+            if(identity == FRAMER)
+            {
+                return "农民";
+            }
+            else
+            {
+                return "地主";
+            }
+        }
     }
 }

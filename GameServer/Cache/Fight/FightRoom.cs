@@ -226,7 +226,7 @@ namespace GameServer.Cache.Fight
             {
                 foreach (var item in playercardlist)
                 {
-                    if(item == cardlist[i])
+                    if(item.ID == cardlist[i].ID)
                     {
                         playercardlist.Remove(item);
                         break;
