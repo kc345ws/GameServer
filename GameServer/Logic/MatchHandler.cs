@@ -98,7 +98,8 @@ namespace GameServer.Logic
                 Console.WriteLine("玩家:" + uid + "进入匹配房间:" + room.ID);
                 //向房间内的除了自己外的人广播有玩家进入
                 UserModel userModel = UserCache.Instance.GetModelByClientPeer(clientPeer);
-                UserDto userDto = new UserDto(userModel.Id, userModel.Name, userModel.Been, userModel.WinCount, userModel.LoseCount, userModel.RunCount, userModel.Lv, userModel.Exp);
+
+                UserDto userDto = new UserDto(userModel.Id, userModel.Name, userModel.Money, userModel.WinCount, userModel.LoseCount, userModel.RunCount, userModel.Lv, userModel.Exp);
                 //给其他发送自己的用户数据模型
                 room.Broadcast(OpCode.MATCH, MatchCode.ENTER_BOD, userDto, clientPeer);
 
@@ -120,7 +121,7 @@ namespace GameServer.Logic
             foreach (var uid in matchRoom.UidClientpeerDic.Keys)
             {
                 UserModel userModel = UserCache.Instance.GetModelByClientPeer(matchRoom.UidClientpeerDic[uid]);
-                UserDto userDto = new UserDto(userModel.Id,userModel.Name, userModel.Been, userModel.WinCount, userModel.LoseCount, userModel.RunCount, userModel.Lv, userModel.Exp);
+                UserDto userDto = new UserDto(userModel.Id,userModel.Name, userModel.Money, userModel.WinCount, userModel.LoseCount, userModel.RunCount, userModel.Lv, userModel.Exp);
                 //roomDto.UidUdtoDic.Add(uid, userDto);
                 roomDto.Add(uid, userDto);
             }
@@ -147,8 +148,9 @@ namespace GameServer.Logic
                     return;
                 }
 
+                UserModel userModel = UserCache.Instance.GetModelByClientPeer(clientPeer);
                 MatchRoom room =  MatchCache.Instance.Leave(uid);
-                Console.WriteLine("玩家:" + uid + "离开匹配房间:" + room.ID);
+                Console.WriteLine("玩家:" + userModel.Name + "离开匹配房间:" + room.ID);
                 //向房间内所有人广播有玩家离开
                 room.Broadcast(OpCode.MATCH, MatchCode.LEAVE_BOD, uid);
             });
@@ -165,6 +167,7 @@ namespace GameServer.Logic
                     }
 
                     int uid = UserCache.Instance.GetId(clientPeer);
+                    UserModel userModel = UserCache.Instance.GetModelByClientPeer(clientPeer);
 
                     if (!MatchCache.Instance.IsMatching(uid))
                     {
@@ -175,7 +178,7 @@ namespace GameServer.Logic
                     room.Ready(uid);
                     //通知房间内除了自己以外的人，自己准备了
                     room.Broadcast(OpCode.MATCH, MatchCode.READY_BOD, uid, clientPeer);
-                    Console.WriteLine("玩家:" + uid + "在匹配房间:" + room.ID + "准备了");
+                    Console.WriteLine("玩家" + userModel.Name + "在匹配房间:" + room.ID + "准备了");
                     
                     //如果所有人都准备了则开始游戏
                     if (room.IsAllReady())
@@ -184,7 +187,7 @@ namespace GameServer.Logic
 
                         if (StartGameEvent != null)
                         {
-                            StartGameEvent(room.ReadyUidlist);
+                            //StartGameEvent(room.ReadyUidlist);
                         }
 
                         //开始游戏场景

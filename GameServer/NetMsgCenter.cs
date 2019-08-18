@@ -15,16 +15,19 @@ namespace GameServer
     /// </summary>
     public class NetMsgCenter : IGameApplication
     {
-        private IHandler account = new AccountHandler();
+        //private IHandler account = new AccountHandler();
         
         //断开连接
         public void OnDisConnect(ClientPeer clientPeer)
         {
-            FightHandler.Instance.OnDisConnect(clientPeer);
-            ChatHandler.Instance.OnDisConnect(clientPeer);
+            //FightHandler.Instance.OnDisConnect(clientPeer);
+            //ChatHandler.Instance.OnDisConnect(clientPeer);
             MatchHandler.Instance.OnDisConnect(clientPeer);
             UserHandler.Instance.OnDisConnect(clientPeer);
-            account.OnDisConnect(clientPeer);    
+            AccountHandler.Instance.OnDisConnect(clientPeer);
+
+
+            //account.OnDisConnect(clientPeer);    
         }
 
         public void OnReceive(ClientPeer clientPeer, SocketMsg msg)
@@ -32,7 +35,7 @@ namespace GameServer
             switch (msg.OpCode)
             {
                 case OpCode.ACCOUNT:
-                    account.OnReceive(clientPeer, msg.SubCode, msg.Value);
+                    AccountHandler.Instance.OnReceive(clientPeer, msg.SubCode, msg.Value);
                     break;
 
                 case OpCode.USER:

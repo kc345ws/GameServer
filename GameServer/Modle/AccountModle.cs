@@ -12,7 +12,7 @@ namespace GameServer.Modle
     public class AccountModle
     {
         public int ID { get; }
-        public string Account { get; }
+        public string Account { get; set; }
         public string PassWord { get; set; }
 
         public AccountModle()

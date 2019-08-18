@@ -39,7 +39,9 @@ namespace GameServer.Logic
         {
             if (UserCache.Instance.IsOnline(client))
             {
-                Console.WriteLine("玩家:"+client.Clientsocket.RemoteEndPoint+"的角色:" + UserCache.Instance.GetModelByClientPeer(client).Name + "下线");
+                string account = AccountCache.Instance.GetAccount(client);
+                //Console.WriteLine("玩家:"+client.Clientsocket.RemoteEndPoint+"的角色:" + UserCache.Instance.GetModelByClientPeer(client).Name + "下线");
+                Console.WriteLine("账号"+ account+"的角色:"+ UserCache.Instance.GetModelByClientPeer(client).Name + "下线");
                 UserCache.Instance.Offline(client);              
             }
         }
@@ -81,16 +83,17 @@ namespace GameServer.Logic
                     }
                     //获取账号id
                     int accountId = AccountCache.Instance.GetOnlineID(client);
+                    string account = AccountCache.Instance.GetAccount(client);
                     //判断一下 这个账号以前有没有角色
-                    if (UserCache.Instance.IsExist(accountId))
+                    if (UserCache.Instance.IsExist(accountId , account))
                     {
                         client.StartSend(OpCode.USER, UserCode.CREATE_USER_SRES, -2);//"已经有角色 不能重复创建"
                         return;
                     }
                     //没有问题 才可以创建
-                    UserCache.Instance.Create(name, accountId);
+                    UserCache.Instance.Create(name, accountId, account);
                     client.StartSend(OpCode.USER, UserCode.CREATE_USER_SRES, 0);//"创建成功"
-                    Console.WriteLine("玩家:" + client.Clientsocket.RemoteEndPoint + ",创建角色:" + name + "成功");
+                    Console.WriteLine("账号" + account + "创建角色:" + name + "成功");
                 }
            );
         }
@@ -111,8 +114,8 @@ namespace GameServer.Logic
                           return;
                       }
                       int accountId = AccountCache.Instance.GetOnlineID(client);
-
-                      if (UserCache.Instance.IsExist(accountId) == false)
+                        string account = AccountCache.Instance.GetAccount(client);
+                    if (UserCache.Instance.IsExist(accountId ,account) == false)
                       {
                           client.StartSend(OpCode.USER, UserCode.GET_USER_SRES, -2);//"没有创建角色 不能获取信息"
                           return;
@@ -128,7 +131,7 @@ namespace GameServer.Logic
                       //给客户端发送自己的角色信息
                       //通过账号ID获取角色信息
                       UserModel model = UserCache.Instance.GetModelByAccountId(accountId);
-                      UserDto dto = new UserDto(model.Id,model.Name, model.Been, model.WinCount, model.LoseCount, model.RunCount, model.Lv, model.Exp);
+                      UserDto dto = new UserDto(model.Id,model.Name, model.Money, model.WinCount, model.LoseCount, model.RunCount, model.Lv, model.Exp);
                       client.StartSend(OpCode.USER, UserCode.GET_USER_SRES, dto);//"获取成功"
                     Console.WriteLine("玩家:" + client.Clientsocket.RemoteEndPoint + "的角色" + model.Name + "上线");
                   }
@@ -152,8 +155,8 @@ namespace GameServer.Logic
                            return;
                        }
                        int accountId = AccountCache.Instance.GetOnlineID(client);
-
-                       if (UserCache.Instance.IsExist(accountId) == false)
+                    string account = AccountCache.Instance.GetAccount(client);
+                    if (UserCache.Instance.IsExist(accountId ,account) == false)
                        {
                            client.StartSend(OpCode.USER, UserCode.LOGIN_USER_SRES, -2);//"没有角色 不能上线"
                            return;

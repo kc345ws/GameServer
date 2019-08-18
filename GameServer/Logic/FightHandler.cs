@@ -220,7 +220,7 @@ namespace GameServer.Logic
                 if (!fightRoom.LeavePlayerDtos.Contains(winList[i]))
                 {
                     //如果玩家没有中途离开
-                    um.Been += winbeen;
+                    um.Money += winbeen;
                     um.Exp += 20;
                     if(um.Exp >= 100)
                     {
@@ -240,7 +240,7 @@ namespace GameServer.Logic
                 if (!fightRoom.LeavePlayerDtos.Contains(loseList[i]))
                 {
                     //如果玩家没有中途离开
-                    um.Been -= losebeen;
+                    um.Money -= losebeen;
                     um.Exp += 10;
                     if (um.Exp >= 100)
                     {
@@ -257,7 +257,7 @@ namespace GameServer.Logic
                 //PlayerDto runplayer = fightRoom.LeavePlayerDtos[i];
                 ClientPeer client = UserCache.Instance.GetClientPeer(fightRoom.LeavePlayerDtos[i].UserID);
                 UserModel um = UserCache.Instance.GetModelByClientPeer(client);
-                um.Been -= runbeen;
+                um.Money -= runbeen;
                 um.LoseCount++;
                 um.RunCount++;
                 UserCache.Instance.Update(um);

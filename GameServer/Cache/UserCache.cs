@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using ChcServer.Util.Concurrent;
 using ChcServer;
+using GameServer.DataBase;
 
 namespace GameServer.Cache
 {
@@ -45,7 +46,7 @@ namespace GameServer.Cache
         /// <summary>
         /// 作为角色的id
         /// </summary>
-        ConcurrentInt id = new ConcurrentInt(-1);
+        public ConcurrentInt ID = new ConcurrentInt(-1);
 
         /// <summary>
         /// 更新角色信息
@@ -60,19 +61,46 @@ namespace GameServer.Cache
         /// </summary>
         /// <param name="name">角色名</param>
         /// <param name="accountId">账号id</param>
-        public void Create(string name, int accountId)
+        /*public void Create(string name, int accountId)
         {
             UserModel model = new UserModel(id.Add_Get(), name, accountId);
             //保存到字典里
             idModelDict.Add(model.Id, model);
             accIdUIdDict.Add(model.AccountId, model.Id);
+        }*/
+
+        public void Create(string name, int accountId , string account)
+        {
+            if (!MysqlPeer.Instance.IsUserExist(account))
+            {
+                UserModel model = new UserModel(ID.Add_Get(), name, accountId, account);
+                //保存到字典里
+                idModelDict.Add(model.Id, model);
+                accIdUIdDict.Add(model.AccountId, model.Id);
+
+                MysqlPeer.Instance.AddUser(model);
+            }          
         }
 
         /// <summary>
         /// 判断此账号下是否有角色
         /// </summary>
-        public bool IsExist(int accountId)
+        public bool IsExist(int accountId , string account)
         {
+            if (!accIdUIdDict.ContainsKey(accountId))
+            {
+                UserModel userModel = MysqlPeer.Instance.GetUserModleByAcc(account);
+                if(userModel == null)
+                {
+                    return false;
+                }
+                else
+                {
+                    accIdUIdDict.Add(accountId, userModel.Id);
+                    idModelDict.Add(userModel.Id, userModel);
+                    return true;
+                }
+            }
             return accIdUIdDict.ContainsKey(accountId);
         }
 

@@ -5,6 +5,7 @@ using System.Text;
 using GameServer.Modle;
 using ChcServer.Util.Concurrent;
 using ChcServer;
+using GameServer.DataBase;
 
 namespace GameServer.Cache
 {
@@ -30,12 +31,15 @@ namespace GameServer.Cache
         }
 
         #region 帐号注册登陆
+        /// <summary>
+        /// 账号与账号数据模型
+        /// </summary>
         private Dictionary<string, AccountModle> accDic;
 
         /// <summary>
         /// 每个在线帐号的唯一ID表示
         /// </summary>
-        private ConcurrentInt ID;
+        public ConcurrentInt ID { get; private set; }
 
         private AccountCache()
         {
@@ -50,6 +54,14 @@ namespace GameServer.Cache
         /// </summary>
         public bool IsExist(string account)
         {
+            if (!accDic.ContainsKey(account))
+            {
+                AccountModle accountModle = MysqlPeer.Instance.GetAccountModleByAcc(account);
+                if(accountModle != null)
+                {
+                    accDic.Add(account, accountModle);
+                }
+            }
             return accDic.ContainsKey(account);
         }
 
@@ -62,6 +74,7 @@ namespace GameServer.Cache
         {
             AccountModle accountModle = new AccountModle(ID.Add_Get(), account, password);
             accDic.Add(account, accountModle);
+            MysqlPeer.Instance.AddAccount(accountModle);
         }
 
         /// <summary>
@@ -153,6 +166,11 @@ namespace GameServer.Cache
             string account = Client_accDic[clientPeer];
             AccountModle accountModle = accDic[account];
             return accountModle.ID;
+        }
+
+        public string GetAccount(ClientPeer clientPeer)
+        {
+            return Client_accDic[clientPeer];
         }
         #endregion
     }

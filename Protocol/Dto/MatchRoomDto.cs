@@ -12,8 +12,10 @@ namespace Protocol.Dto
     [Serializable]
     public class MatchRoomDto
     {
-        public int Leftid { get; private set; }
-        public int Rightid { get; private set; }
+        //public int Leftid { get; private set; }
+        //public int Rightid { get; private set; }
+        public int OtherID { get; private set; }
+
         /// <summary>
         /// 在房间内的角色ID与角色数据模型
         /// </summary>
@@ -102,14 +104,28 @@ namespace Protocol.Dto
         /// <param name="myuid">自己的用户ID</param>
         public void ResetPosition(int myuid)
         {
-            Leftid = -1;
-            Rightid = -1;
+            //Leftid = -1;
+            //Rightid = -1;
+            OtherID = -1;
+
             //一个人的情况不用设置左右玩家
             if(EnterList.Count == 1)
             {
                 return;
             }
-            else if(EnterList.Count == 2)//两个人
+            else if(EnterList.Count == 2)
+            {
+                if(myuid == EnterList[0])
+                {
+                    OtherID = EnterList[1];
+                }
+                else
+                {
+                    OtherID = EnterList[0];
+                }
+            }
+
+            /*else if(EnterList.Count == 2)//两个人
             {
                 //如果自己是先进入的 i a
                 if(myuid == EnterList[0])
@@ -138,7 +154,7 @@ namespace Protocol.Dto
                     Leftid = EnterList[1];
                     Rightid = EnterList[0];
                 }
-            }
+            }*/
         }
     }
 }

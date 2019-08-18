@@ -103,7 +103,7 @@ namespace GameServer.Cache.Fight
         public void Leave(ClientPeer clientPeer)
         {
             UserModel userModel = UserCache.Instance.GetModelByClientPeer(clientPeer);
-            userModel.Been -= Multiple * 100;
+            userModel.Money -= Multiple * 100;
             userModel.RunCount++;
             userModel.LoseCount++;
         }

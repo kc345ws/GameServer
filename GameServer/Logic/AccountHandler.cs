@@ -8,6 +8,7 @@ using Protocol.Code;
 using Protocol.Dto;
 using GameServer.Cache;
 using ChcServer.Util.Concurrent;
+using GameServer.DataBase;
 
 namespace GameServer.Logic
 {
@@ -19,11 +20,26 @@ namespace GameServer.Logic
 
     public class AccountHandler : IHandler
     {
+        private static AccountHandler instance = new AccountHandler();
+        public static AccountHandler Instance { get
+            {
+                lock (instance)
+                {
+                    if (instance == null)
+                    {
+                        instance = new AccountHandler();
+                    }
+                    return instance;
+                }
+            } }
+
+
+
         ClientPeer clientPeer = null;
 
         private SocketMsg socketMsg = new SocketMsg();
 
-        public AccountHandler()
+        private AccountHandler()
         {
             //Program.Server.accountOfflineEvent += OnDisConnect;
         }
@@ -36,8 +52,10 @@ namespace GameServer.Logic
         {
             if (AccountCache.Instance.IsOnline(clientPeer))
             {
-                AccountCache.Instance.OffLine(clientPeer);
-                Console.WriteLine("玩家下线:"+clientPeer.Clientsocket.RemoteEndPoint);
+                string account = AccountCache.Instance.GetAccount(clientPeer);
+                AccountCache.Instance.OffLine(clientPeer);               
+                //Console.WriteLine("玩家下线:"+clientPeer.Clientsocket.RemoteEndPoint);
+                Console.WriteLine("账号下线:" + account);
             }
         }
 
@@ -97,7 +115,7 @@ namespace GameServer.Logic
                 {
                     AccountCache.Instance.Create(account, pwd);
                     clientPeer.StartSend(OpCode.ACCOUNT, AccountCode.REGISTER_SRES, "注册成功");
-                    Console.WriteLine("玩家:" + account + "注册成功");
+                    Console.WriteLine("账号:" + account + "注册成功");
                 }
             });  
         }
@@ -135,7 +153,7 @@ namespace GameServer.Logic
                 {
                     //玩家上线
                     AccountCache.Instance.Online(acc, clientPeer);
-                    Console.WriteLine("玩家:" + acc + "上线");
+                    Console.WriteLine("账号:" + acc + "上线");
                     //登陆成功切换场景
                     clientPeer.StartSend(OpCode.ACCOUNT, AccountCode.LOGIN_SRES, "登陆成功");
                 }

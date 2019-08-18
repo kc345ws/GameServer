@@ -88,7 +88,7 @@ namespace GameServer.Cache.Match
             }
             int rid = roomid.Add_Get();
 
-            room = new MatchRoom(rid);
+            room = new MatchRoom(rid, 2);//两人房间
             //matchRooms.Enqueue(room);
             ridModleDic.Add(rid, room);
         }
