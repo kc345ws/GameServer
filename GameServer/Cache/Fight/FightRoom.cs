@@ -18,7 +18,7 @@ namespace GameServer.Cache.Fight
         public int ID { get; private set; }
 
         /// <summary>
-        /// 战斗房间中的玩家聊表
+        /// 战斗房间中的玩家列表
         /// </summary>
         public List<PlayerDto> playerDtos { get; set; }
 
@@ -33,14 +33,19 @@ namespace GameServer.Cache.Fight
         public CardLibrary cardLibrary { get; private set; }
 
         /// <summary>
+        /// 玩家ID与种族ID的映射
+        /// </summary>
+        public Dictionary<int,int>UidRaceidDic { get; private set; }
+
+        /*/// <summary>
         /// 底牌
         /// </summary>
-        public List<CardDto> TableCards { get; private set; }
+        public List<CardDto> TableCards { get; private set; }*/
 
-        /// <summary>
+        /*/// <summary>
         /// 倍数
         /// </summary>
-        public int Multiple;
+        public int Multiple;*/
 
         /// <summary>
         /// 回合管理类
@@ -50,7 +55,7 @@ namespace GameServer.Cache.Fight
         public FightRoom(int id , List<int>uidList)
         {
             ID = id;
-            Multiple = 1;
+            //Multiple = 1;
 
             playerDtos = new List<PlayerDto>();
             foreach (var item in uidList)
@@ -60,9 +65,18 @@ namespace GameServer.Cache.Fight
             }
 
             LeavePlayerDtos = new List<PlayerDto>();
-            cardLibrary = new CardLibrary();
-            TableCards = new List<CardDto>();
+            //cardLibrary = new CardLibrary(List<int>uidList);
+            //TableCards = new List<CardDto>();
             roundModle = new RoundModle();
+            UidRaceidDic = new Dictionary<int, int>();
+        }
+
+        /// <summary>
+        /// 创建战斗房间的牌库
+        /// </summary>
+        public void CreateCardLibrary()
+        {
+            cardLibrary = new CardLibrary(UidRaceidDic);
         }
 
         /// <summary>
@@ -103,7 +117,7 @@ namespace GameServer.Cache.Fight
         public void Leave(ClientPeer clientPeer)
         {
             UserModel userModel = UserCache.Instance.GetModelByClientPeer(clientPeer);
-            userModel.Money -= Multiple * 100;
+            //userModel.Money -= Multiple * 100;
             userModel.RunCount++;
             userModel.LoseCount++;
         }
@@ -130,7 +144,7 @@ namespace GameServer.Cache.Fight
             throw new Exception("没有下个玩家");
         }
 
-        /// <summary>
+        /*/// <summary>
         /// 判断该出牌者的出牌能否大于上一个最大出牌
         /// </summary>
         /// <param name="type"></param>
@@ -192,7 +206,7 @@ namespace GameServer.Cache.Fight
             }
 
             return candeal;
-        }
+        }*/
 
 
         /// <summary>
@@ -246,22 +260,22 @@ namespace GameServer.Cache.Fight
                 PlayerDto playerDto = playerDtos[i];
                 for(int j = 0; j < 17; j++)
                 {
-                    CardDto cardDto = cardLibrary.DispatchCard();
-                    playerDto.cardDtos.Add(cardDto);
+                   // CardDto cardDto = cardLibrary.DispatchCard();
+                   //playerDto.cardDtos.Add(cardDto);
                 }
             }
-            //设置底牌
+            /*//设置底牌
             for(int i = 0; i < 3; i++)
             {
-                TableCards.Add(cardLibrary.DispatchCard());
-            }
+                //TableCards.Add(cardLibrary.DispatchCard());
+            }*/
         }
 
         /// <summary>
         /// 给地主发底牌
         /// </summary>
         /// <param name="uid"></param>
-        public void DispatchTableCard(int uid)
+        /*public void DispatchTableCard(int uid)
         {
             PlayerDto player = null;
             foreach (var item in playerDtos)
@@ -276,14 +290,14 @@ namespace GameServer.Cache.Fight
             {
                 for(int i = 0; i < 3; i++)
                 {
-                    player.cardDtos.Add(TableCards[i]);
+                    //player.cardDtos.Add(TableCards[i]);
                 }                
             }
             else
             {
                 throw new Exception("设置底牌出错");
             }
-        }
+        }*/
 
         /// <summary>
         /// 设置地主
@@ -302,9 +316,9 @@ namespace GameServer.Cache.Fight
 
             if (player != null)
             {
-                player.Identity = PlayerIdentity.LANDLORD;
+                //player.Identity = PlayerIdentity.LANDLORD;
                 //发底牌
-                DispatchTableCard(uid);
+                //DispatchTableCard(uid);
                 //开始回合
                 roundModle.Start(uid);
             }
@@ -403,7 +417,7 @@ namespace GameServer.Cache.Fight
             SortCard(playerDtos[0].cardDtos);
             SortCard(playerDtos[1].cardDtos);
             SortCard(playerDtos[2].cardDtos);
-            SortCard(TableCards);
+            //SortCard(TableCards);
         }
 
         /// <summary>

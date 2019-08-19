@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Protocol.Dto.Fight;
 using Protocol.Constants;
+using Protocol.Constants.Orc;
 
 namespace GameServer.Cache.Fight
 {
@@ -13,28 +14,130 @@ namespace GameServer.Cache.Fight
     /// </summary>
     public class CardLibrary
     {
-        public Queue<CardDto> cardDtos = new Queue<CardDto>();
+        //public Queue<CardDto> cardDtos = new Queue<CardDto>();
+
+        public Queue<IArmyCardBase>[] armyCards = new Queue<IArmyCardBase>[2];
 
         private int CardId = 0;
 
-        public CardLibrary()
+        /*public CardLibrary()
         {
             //创建牌
             Create();
             //洗牌
+            shuffle();
+        }*/
+
+        public CardLibrary(Dictionary<int, int> UidRaceidDic)
+        {
+            Create(UidRaceidDic);
             shuffle();
         }
 
-        public void Init()
+        /*public void Init()
         {
             //创建牌
             Create();
             //洗牌
             shuffle();
+        }*/
+
+        private void Create(Dictionary<int, int> UidRaceidDic)
+        {
+            int race = -1;         
+            for(int playerindex = 0; playerindex < UidRaceidDic.Count; playerindex++)
+            {
+                race = UidRaceidDic[playerindex];
+
+                switch (race)
+                {
+                    case RaceType.ORC:
+                        //兽族
+                        CreateOrc(playerindex);
+                        
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 创建兽族牌组
+        /// </summary>
+        private void CreateOrc(int playerIndex)
+        {
+            Queue<IArmyCardBase> armycardQueue = armyCards[playerIndex];
+            Random random = new Random();
+            //17张兵种牌
+            int ordinaryCount = random.Next(7, 12);//普通兵种7-11张
+            int middleCount = random.Next(0, 6);//中级0-5           
+            int HeroCount = 1;
+            //剩余为髙阶
+            int highCount = 17 - ordinaryCount - middleCount - HeroCount;
+
+            int infantryCount = random.Next(ordinaryCount);//兽族步兵
+            int eagleCount = ordinaryCount - infantryCount;//鹰骑士
+            int blackRatsCount = random.Next(middleCount);//黑鼠爆破手
+            int FrogCount = (middleCount - blackRatsCount)/2;//巨口蛙
+            int ForestCount = middleCount - FrogCount - blackRatsCount;//射手
+            int PangolinCount = random.Next(highCount);//穿山甲
+            int RavenShamanCount = highCount - PangolinCount;//乌鸦萨满
+
+            for(int i = 0; i < HeroCount; i++)
+            {
+                OrcHero orcHero = new OrcHero();
+                armycardQueue.Enqueue(orcHero);
+            }
+
+            for (int i = 0; i < infantryCount; i++)
+            {
+                OrcInfantry orcInfantry = new OrcInfantry();
+                armycardQueue.Enqueue(orcInfantry);
+            }
+
+            for(int i = 0; i < eagleCount; i++)
+            {
+                OrcEagleRiders orcEagleRiders = new OrcEagleRiders();
+                armycardQueue.Enqueue(orcEagleRiders);
+            }
+
+            for(int i = 0; i < blackRatsCount; i++)
+            {
+                OrcBlackRatsBoomer orcBlackRatsBoomer = new OrcBlackRatsBoomer();
+                armycardQueue.Enqueue(orcBlackRatsBoomer);
+            }
+
+            for(int i = 0; i < FrogCount; i++)
+            {
+                OrcGiantmouthedFrog orcGiantmouthedFrog = new OrcGiantmouthedFrog();
+                armycardQueue.Enqueue(orcGiantmouthedFrog);
+            }
+
+            for(int i = 0; i < ForestCount; i++)
+            {
+                OrcForestShooter orcForestShooter = new OrcForestShooter();
+                armycardQueue.Enqueue(orcForestShooter);
+            }
+
+            for(int i = 0; i < PangolinCount; i++)
+            {
+                OrcPangolin orcPangolin = new OrcPangolin();
+                armycardQueue.Enqueue(orcPangolin);
+            }
+
+            for(int i = 0; i < RavenShamanCount; i++)
+            {
+                OrcRavenShaman orcRavenShaman = new OrcRavenShaman();
+                armycardQueue.Enqueue(orcRavenShaman);
+            }
+
+
+            //指令卡25-28张
+            int OrderCount = random.Next(25, 29);
         }
 
         private void Create()
         {
+            /*
             //从黑桃到方片
             for(int color = CardColor.SPADE; color <= CardColor.DIAMOND; color++)
             {
@@ -53,7 +156,7 @@ namespace GameServer.Cache.Fight
 
             CardDto bigJoker = new CardDto(CardId, CardWeight.GetName(CardWeight.BIGJOKER), CardColor.NONE, CardWeight.BIGJOKER);
             CardId++;
-            cardDtos.Enqueue(bigJoker);
+            cardDtos.Enqueue(bigJoker);*/
         }
 
         /// <summary>
@@ -84,7 +187,7 @@ namespace GameServer.Cache.Fight
             }
 
 
-            foreach (var item in cardDtos)
+            /*foreach (var item in cardDtos)
             {
                 int index = indexqueue.Dequeue();
                 //shuffleCards.Insert(index, item);
@@ -96,17 +199,17 @@ namespace GameServer.Cache.Fight
             foreach (var item in shuffleCards)
             {
                 cardDtos.Enqueue(item);
-            }
+            }*/
         }
 
         /// <summary>
         /// 发牌
         /// </summary>
         /// <returns></returns>
-        public CardDto DispatchCard()
+        /*public CardDto DispatchCard()
         {
-            return cardDtos.Dequeue();
-        }
+            //return cardDtos.Dequeue();
+        }*/
 
     }
 }

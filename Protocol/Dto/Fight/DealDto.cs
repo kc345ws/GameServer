@@ -42,8 +42,8 @@ namespace Protocol.Dto.Fight
         {
             UserID = uid;
             SelectCards = cardlist;
-            Type = CardType.GetType(cardlist);
-            Weight = CardWeight.GetWeight(cardlist, Type);      
+            //Type = CardType.GetType(cardlist);
+            //Weight = CardWeight.GetWeight(cardlist, Type);      
             Length = cardlist.Count;
 
             //类型不为空则合法

@@ -7,7 +7,7 @@ namespace Protocol.Code
 {
     public class FightCode
     {
-        public const int GRAB_LANDLORD_CREQ = 0;
+        /*public const int GRAB_LANDLORD_CREQ = 0;
         public const int GRAB_LANDLORD_SBOD = 1;//第一个叫的结果
         public const int TURN_LANDLORD_SBOD = 2;//下一个抢的结果
 
@@ -26,6 +26,15 @@ namespace Protocol.Code
         public const int GET_CARD_CREQ = 11;
         public const int GET_CARD_SRES = 12;
 
-        public const int PLAYER_LEAVE_CREQ = 13;//玩家离开房间
+        public const int PLAYER_LEAVE_CREQ = 13;//玩家离开房间*/
+
+
+        /// <summary>
+        /// 0兽族 1... 2...
+        /// </summary>
+        public const int SELECT_RACE_CREQ = 0;//选择种族
+        public const int SELECT_RACC_SRES = 1;
+        public const int SELECT_RACE_SBOD = 2;
+
     }
 }

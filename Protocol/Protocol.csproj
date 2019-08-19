@@ -50,9 +50,42 @@
     <Compile Include="Code\OpCode.cs" />
     <Compile Include="Code\SceneCode.cs" />
     <Compile Include="Code\UserCode.cs" />
-    <Compile Include="Constants\CardColor.cs" />
-    <Compile Include="Constants\CardWeight.cs" />
-    <Compile Include="Constants\PlayerIdentity.cs" />
+    <Compile Include="Constants\ArmyCardBase.cs" />
+    <Compile Include="Constants\ArmyClassType.cs" />
+    <Compile Include="Constants\CardBase.cs" />
+    <Compile Include="Constants\Map\Map.cs" />
+    <Compile Include="Constants\Map\MapAttackType.cs" />
+    <Compile Include="Constants\Map\MapPoint.cs" />
+    <Compile Include="Constants\Orc\Army\OrcArmyCardType.cs" />
+    <Compile Include="Constants\Orc\Army\OrcBlackRatsBoomer.cs" />
+    <Compile Include="Constants\Orc\Army\OrcEagleRiders.cs" />
+    <Compile Include="Constants\Orc\Army\OrcForestShooter.cs" />
+    <Compile Include="Constants\Orc\Army\OrcGiantmouthedFrog.cs" />
+    <Compile Include="Constants\Orc\Army\OrcHero.cs" />
+    <Compile Include="Constants\Orc\Army\OrcInfantry.cs" />
+    <Compile Include="Constants\Orc\Army\OrcPangolin.cs" />
+    <Compile Include="Constants\Orc\Army\OrcRavenShaman.cs" />
+    <Compile Include="Constants\Orc\OtherCard\OrcOtherCardType.cs" />
+    <Compile Include="Constants\Orc\OtherCard\Orc_Other_AncestorHelmets.cs" />
+    <Compile Include="Constants\Orc\OtherCard\Orc_Other_EnhancedExplosives.cs" />
+    <Compile Include="Constants\Orc\OtherCard\Orc_Other_Groundfetternet.cs" />
+    <Compile Include="Constants\Orc\OtherCard\Orc_Other_LandLife.cs" />
+    <Compile Include="Constants\Orc\OtherCard\Orc_Other_LightningChain.cs" />
+    <Compile Include="Constants\Orc\OtherCard\Orc_Other_Recoverysiphon.cs" />
+    <Compile Include="Constants\Orc\OtherCard\Orc_Other_Skyfire.cs" />
+    <Compile Include="Constants\Orc\OtherCard\Orc_Other_Toadbomb.cs" />
+    <Compile Include="Constants\Orc\OtherCard\Orc_Other_Totemsummon.cs" />
+    <Compile Include="Constants\OrderCard\OrderCardBase.cs" />
+    <Compile Include="Constants\OrderCard\OrderCardType.cs" />
+    <Compile Include="Constants\OrderCard\Order_Attack.cs" />
+    <Compile Include="Constants\OrderCard\Order_BackAttack.cs" />
+    <Compile Include="Constants\OrderCard\Order_Dodge.cs" />
+    <Compile Include="Constants\OrderCard\Order_Rest.cs" />
+    <Compile Include="Constants\OrderCard\Order_Shuffle.cs" />
+    <Compile Include="Constants\OrderCard\Order_Take.cs" />
+    <Compile Include="Constants\OtherCatd\IOtherCardBase.cs" />
+    <Compile Include="Constants\OtherCatd\OtherCardType.cs" />
+    <Compile Include="Constants\RaceType.cs" />
     <Compile Include="Dto\AccountDto.cs" />
     <Compile Include="Dto\Fight\CardDto.cs" />
     <Compile Include="Constants\CardType.cs" />
@@ -66,5 +99,6 @@
     <Compile Include="Dto\UserDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

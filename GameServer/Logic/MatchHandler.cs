@@ -10,6 +10,7 @@ using GameServer.Cache.Match;
 using Protocol.Dto;
 using ChcServer.Util.Concurrent;
 using GameServer.Model;
+using GameServer.Cache.Fight;
 
 namespace GameServer.Logic
 {
@@ -185,14 +186,16 @@ namespace GameServer.Logic
                     {
                         FightHandler.Instance.ToString();
 
-                        if (StartGameEvent != null)
+                        /*if (StartGameEvent != null)
                         {
-                            //StartGameEvent(room.ReadyUidlist);
-                        }
+                            StartGameEvent(room.ReadyUidlist);
+                        }*/
+                        //创建战斗房间
+                        FightRoom fightRoom = FightRoomCache.Instance.Create(room.ReadyUidlist);
+                   
+                        //广播消息通知房间内所有人开始选择选择种族
+                        room.Broadcast(OpCode.FIGHT, FightCode.SELECT_RACE_SBOD, "开始选择种族");
 
-                        //开始游戏场景
-                        room.Broadcast(OpCode.MATCH, MatchCode.START_GAME_BOD, "0");
-                        //广播消息通知房间内所有人开始游戏
                         MatchCache.Instance.Destory(room);//销毁匹配房间重用
                         return;
                     }             

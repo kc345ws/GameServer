@@ -144,8 +144,8 @@ namespace GameServer.Cache.Fight
                 throw new Exception("没有这个战斗房间");
             }
 
-            fightRoom.cardLibrary.Init();//重新初始化牌库
-            fightRoom.TableCards.Clear();
+            //fightRoom.cardLibrary.Init();//重新初始化牌库
+            //fightRoom.TableCards.Clear();
             fightRoom.roundModle.Init();//初始化回合管理器
 
             for (int i = 0; i < fightRoom.playerDtos.Count; i++)

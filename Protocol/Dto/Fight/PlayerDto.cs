@@ -21,7 +21,7 @@ namespace Protocol.Dto.Fight
         public PlayerDto(int id)
         {
             UserID = id;
-            Identity = PlayerIdentity.FRAMER;
+            //Identity = PlayerIdentity.FRAMER;
             cardDtos = new List<CardDto>();
         }
 
