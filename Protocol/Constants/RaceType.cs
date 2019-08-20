@@ -10,9 +10,11 @@ namespace Protocol.Constants
     /// </summary>
     public class RaceType
     {
+        public const int NONE = 0;
+
         /// <summary>
         /// 兽族
         /// </summary>
-        public const int ORC = 0;
+        public const int ORC = 1;
     }
 }

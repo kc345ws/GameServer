@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ChcServer;
+using GameServer.DataBase;
 using GameServer.Model;
 using Protocol.Constants;
 using Protocol.Dto.Fight;
@@ -117,9 +118,11 @@ namespace GameServer.Cache.Fight
         public void Leave(ClientPeer clientPeer)
         {
             UserModel userModel = UserCache.Instance.GetModelByClientPeer(clientPeer);
-            //userModel.Money -= Multiple * 100;
+            userModel.Money -= 100;
             userModel.RunCount++;
             userModel.LoseCount++;
+
+            MysqlPeer.Instance.UpdateUserInfo(userModel);
         }
 
         /// <summary>
@@ -223,8 +226,8 @@ namespace GameServer.Cache.Fight
                 {
                     playerdto = item;
                 }
-            }          
-            return playerdto.cardDtos;
+            }
+            return playerdto.PlayerCards;
         }
 
         /// <summary>
@@ -240,11 +243,11 @@ namespace GameServer.Cache.Fight
             {
                 foreach (var item in playercardlist)
                 {
-                    if(item.ID == cardlist[i].ID)
+                    /*if(item.ID == cardlist[i].ID)
                     {
                         playercardlist.Remove(item);
                         break;
-                    }
+                    }*/
                 }
             }
         }
@@ -255,7 +258,7 @@ namespace GameServer.Cache.Fight
         public void InitPlayerCards()
         {
             //每人17张牌
-            for(int i = 0; i < 3; i++)
+            /*for(int i = 0; i < 3; i++)
             {
                 PlayerDto playerDto = playerDtos[i];
                 for(int j = 0; j < 17; j++)
@@ -263,12 +266,72 @@ namespace GameServer.Cache.Fight
                    // CardDto cardDto = cardLibrary.DispatchCard();
                    //playerDto.cardDtos.Add(cardDto);
                 }
-            }
-            /*//设置底牌
-            for(int i = 0; i < 3; i++)
-            {
-                //TableCards.Add(cardLibrary.DispatchCard());
             }*/
+
+            //每人开局9张兵种卡 其余位于牌库
+            /*int playerIndex = 0;
+            foreach (var Cards in cardLibrary.playercardDtos)
+            {
+                int count = 0;
+                foreach (var item in Cards)
+                {
+                    if(item.Type == CardType.ARMYCARD)
+                    {
+                        count++;
+                        
+                        playerDtos[playerIndex].AddCard(item);
+                        Cards.Remove(item);
+                        if(count >= 8)
+                        {
+                            break;
+                        }
+                    }
+                }
+
+                playerIndex++;          
+            }*/
+            for(int i = 0; i < 2; i++)
+            {
+                int count = 0;
+                int index = 0;
+                List<int> removeIndexlist = new List<int>();
+                foreach (var item in cardLibrary.playercardDtos[i])
+                {
+                    if (item.Type == CardType.ARMYCARD)
+                    {
+                        count++;
+
+                        playerDtos[i].AddCard(item);
+                        removeIndexlist.Add(index);
+                        //Cards.Remove(item);
+                        if (count > 8)
+                        {
+                            break;
+                        }
+                    }
+                    index++;
+                }
+
+                for(int j = 0; j < removeIndexlist.Count; j++)
+                {
+                    cardLibrary.playercardDtos[i].RemoveAt(index);
+                }
+                count = 0;
+                index = 0;
+                removeIndexlist.Clear();
+            }
+
+
+            //每人开局摸5张牌
+            for (int i = 0; i < 2; i++)
+            {
+                for(int j = 0; j < 5; j++)
+                {
+                    playerDtos[i].AddCard(cardLibrary.playercardDtos[i][j]);
+
+                    cardLibrary.playercardDtos[i].RemoveAt(j);
+                }
+            }
         }
 
         /// <summary>
@@ -393,30 +456,30 @@ namespace GameServer.Cache.Fight
         /// </summary>
         /// <param name="cardList"></param>
         /// <param name="asc"></param>
-        private void SortCard(List<CardDto> cardList,bool asc =true)//asc升序 des降序
+       /* private void SortCard(List<CardDto> cardList,bool asc =true)//asc升序 des降序
         {
             cardList.Sort(delegate (CardDto a, CardDto b)
             {
                 if (asc)
                 {
-                    return a.Weight.CompareTo(b.Weight);
+                    //return a.Weight.CompareTo(b.Weight);
                 }
                 else
                 {
-                    return a.Weight.CompareTo(b.Weight) * -1;
+                    //return a.Weight.CompareTo(b.Weight) * -1;
                 }
             });
 
            
 
-        }
+        }*/
 
         
         public void Sort(bool asc = true)
         {
-            SortCard(playerDtos[0].cardDtos);
-            SortCard(playerDtos[1].cardDtos);
-            SortCard(playerDtos[2].cardDtos);
+            //SortCard(playerDtos[0].cardDtos);
+            //SortCard(playerDtos[1].cardDtos);
+            //SortCard(playerDtos[2].cardDtos);
             //SortCard(TableCards);
         }
 

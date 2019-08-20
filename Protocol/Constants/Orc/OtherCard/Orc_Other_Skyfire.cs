@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Protocol.Constants.Orc.OtherCard
 {
-    class Orc_Other_Skyfire : IOtherCardBase
+    public class Orc_Other_Skyfire : IOtherCardBase
     {
         public Orc_Other_Skyfire()
         {

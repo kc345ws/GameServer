@@ -8,6 +8,7 @@ namespace Protocol.Constants
     /// <summary>
     /// 卡牌基类
     /// </summary>
+    /// 
     public interface ICardBase
     {
         /// <summary>

@@ -30,11 +30,13 @@ namespace Protocol.Code
 
 
         /// <summary>
-        /// 0兽族 1... 2...
+        /// 1兽族 2...3...
         /// </summary>
         public const int SELECT_RACE_CREQ = 0;//选择种族
         public const int SELECT_RACC_SRES = 1;
         public const int SELECT_RACE_SBOD = 2;
 
+
+        public const int GET_CARD_SRES = 3;//服务器向客户端发送
     }
 }

@@ -233,5 +233,27 @@ namespace GameServer.DataBase
             return null;
         }
 
+        /// <summary>
+        /// 更新用户信息
+        /// </summary>
+        /// <param name="userModel"></param>
+        public void UpdateUserInfo(UserModel userModel)
+        {
+            if (OpenConnection())
+            {
+
+                string Query = string.Format("update user set Money = '{0}'," +
+                    "Name = '{1}',WinCount = '{2}',LoseCount ='{3}',RunCount = '{4}',Level = '{5}' ," +
+                    "Exp ='{6}' where Account = '{7}';", userModel.Money, userModel.Name, userModel.WinCount,
+                    userModel.LoseCount, userModel.RunCount, userModel.Lv, userModel.Exp, userModel.Account);
+
+                MySqlCommand mySqlCommand = new MySqlCommand(Query, SqlConnection);
+                mySqlCommand.ExecuteNonQuery();
+
+
+                CloseConnection();
+            }
+        }
+
     }
 }

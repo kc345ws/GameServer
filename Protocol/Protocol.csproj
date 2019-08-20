@@ -52,7 +52,7 @@
     <Compile Include="Code\UserCode.cs" />
     <Compile Include="Constants\ArmyCardBase.cs" />
     <Compile Include="Constants\ArmyClassType.cs" />
-    <Compile Include="Constants\CardBase.cs" />
+    <Compile Include="Constants\ICardBase.cs" />
     <Compile Include="Constants\Map\Map.cs" />
     <Compile Include="Constants\Map\MapAttackType.cs" />
     <Compile Include="Constants\Map\MapPoint.cs" />

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using Protocol.Dto.Fight;
 using Protocol.Constants;
 using Protocol.Constants.Orc;
+using Protocol.Constants.OrderCard;
+using Protocol.Constants.Orc.OtherCard;
+using ChcServer.Util.Concurrent;
 
 namespace GameServer.Cache.Fight
 {
@@ -14,11 +17,21 @@ namespace GameServer.Cache.Fight
     /// </summary>
     public class CardLibrary
     {
-        //public Queue<CardDto> cardDtos = new Queue<CardDto>();
+        //public Queue<CardDto> []playercardDtos = new Queue<CardDto>[2];
+        public List<CardDto>[] playercardDtos = new List<CardDto>[2];
 
-        public Queue<IArmyCardBase>[] armyCards = new Queue<IArmyCardBase>[2];
+        //public List<IArmyCardBase>[] ArmyCards = new List<IArmyCardBase>[2];
+       // public List<IOrderCardBase>[] OrderCards = new List<IOrderCardBase>[2];
+        //public List<IOtherCardBase>[] OtherCards = new List<IOtherCardBase>[2];
 
-        private int CardId = 0;
+        //public List<ICardBase>[] playerCards = new List<ICardBase>[2];
+
+        /// <summary>
+        /// 玩家ID与牌库的映射
+        /// </summary>
+        public Dictionary<int, List<CardDto>> UidCardsDic = new Dictionary<int, List<CardDto>>();
+
+        private ConcurrentInt CardId = new ConcurrentInt(-1);
 
         /*public CardLibrary()
         {
@@ -44,17 +57,26 @@ namespace GameServer.Cache.Fight
 
         private void Create(Dictionary<int, int> UidRaceidDic)
         {
-            int race = -1;         
+            int race = -1;
+            Queue<int> uidQueue = new Queue<int>();
+
+            foreach (var item in UidRaceidDic.Keys)
+            {
+                uidQueue.Enqueue(item);
+            }
+
             for(int playerindex = 0; playerindex < UidRaceidDic.Count; playerindex++)
             {
                 race = UidRaceidDic[playerindex];
+                
 
                 switch (race)
                 {
                     case RaceType.ORC:
                         //兽族
                         CreateOrc(playerindex);
-                        
+                        UidCardsDic.Add(uidQueue.Dequeue(), playercardDtos[playerindex]);
+
                         break;
                 }
             }
@@ -65,7 +87,14 @@ namespace GameServer.Cache.Fight
         /// </summary>
         private void CreateOrc(int playerIndex)
         {
-            Queue<IArmyCardBase> armycardQueue = armyCards[playerIndex];
+            //List<IArmyCardBase> armycardList = ArmyCards[playerIndex];
+            //List<IOrderCardBase> orderCardList = OrderCards[playerIndex];
+            //List<IOtherCardBase> otherCardList = OtherCards[playerIndex];
+
+            //List<ICardBase> Cards = playerCards[playerIndex];
+            playercardDtos[playerIndex] = new List<CardDto>();
+            List<CardDto> cardDtos = playercardDtos[playerIndex];
+
             Random random = new Random();
             //17张兵种牌
             int ordinaryCount = random.Next(7, 12);//普通兵种7-11张
@@ -84,55 +113,205 @@ namespace GameServer.Cache.Fight
 
             for(int i = 0; i < HeroCount; i++)
             {
-                OrcHero orcHero = new OrcHero();
-                armycardQueue.Enqueue(orcHero);
+                //OrcHero orcHero = new OrcHero();
+                //armycardList.Add(orcHero);
+                cardDtos.Add(new CardDto(CardId.Add_Get(), RaceType.ORC, OrcArmyCardType.Hero));
             }
 
             for (int i = 0; i < infantryCount; i++)
             {
-                OrcInfantry orcInfantry = new OrcInfantry();
-                armycardQueue.Enqueue(orcInfantry);
+                //OrcInfantry orcInfantry = new OrcInfantry();
+                //armycardList.Add(orcInfantry);
+                cardDtos.Add(new CardDto(CardId.Add_Get(), RaceType.ORC, OrcArmyCardType.Infantry));
             }
 
             for(int i = 0; i < eagleCount; i++)
             {
-                OrcEagleRiders orcEagleRiders = new OrcEagleRiders();
-                armycardQueue.Enqueue(orcEagleRiders);
+                //OrcEagleRiders orcEagleRiders = new OrcEagleRiders();
+                //armycardList.Add(orcEagleRiders);
+                cardDtos.Add(new CardDto(CardId.Add_Get(), RaceType.ORC, OrcArmyCardType.Eagle_Riders));
             }
 
             for(int i = 0; i < blackRatsCount; i++)
             {
-                OrcBlackRatsBoomer orcBlackRatsBoomer = new OrcBlackRatsBoomer();
-                armycardQueue.Enqueue(orcBlackRatsBoomer);
+                //OrcBlackRatsBoomer orcBlackRatsBoomer = new OrcBlackRatsBoomer();
+                //armycardList.Add(orcBlackRatsBoomer);
+                cardDtos.Add(new CardDto(CardId.Add_Get(), RaceType.ORC, OrcArmyCardType.Black_Rats_Boomer));
             }
 
             for(int i = 0; i < FrogCount; i++)
             {
-                OrcGiantmouthedFrog orcGiantmouthedFrog = new OrcGiantmouthedFrog();
-                armycardQueue.Enqueue(orcGiantmouthedFrog);
+                //OrcGiantmouthedFrog orcGiantmouthedFrog = new OrcGiantmouthedFrog();
+                //armycardList.Add(orcGiantmouthedFrog);
+                cardDtos.Add(new CardDto(CardId.Add_Get(), RaceType.ORC, OrcArmyCardType.Giant_mouthed_Frog));
             }
 
             for(int i = 0; i < ForestCount; i++)
             {
-                OrcForestShooter orcForestShooter = new OrcForestShooter();
-                armycardQueue.Enqueue(orcForestShooter);
+                //OrcForestShooter orcForestShooter = new OrcForestShooter();
+                //armycardList.Add(orcForestShooter);
+                cardDtos.Add(new CardDto(CardId.Add_Get(), RaceType.ORC, OrcArmyCardType.Forest_Shooter));
             }
 
             for(int i = 0; i < PangolinCount; i++)
             {
-                OrcPangolin orcPangolin = new OrcPangolin();
-                armycardQueue.Enqueue(orcPangolin);
+                //OrcPangolin orcPangolin = new OrcPangolin();
+                //armycardList.Add(orcPangolin);
+                cardDtos.Add(new CardDto(CardId.Add_Get(), RaceType.ORC, OrcArmyCardType.Pangolin));
             }
 
             for(int i = 0; i < RavenShamanCount; i++)
             {
-                OrcRavenShaman orcRavenShaman = new OrcRavenShaman();
-                armycardQueue.Enqueue(orcRavenShaman);
+                //OrcRavenShaman orcRavenShaman = new OrcRavenShaman();
+                //armycardList.Add(orcRavenShaman);
+                cardDtos.Add(new CardDto(CardId.Add_Get(), RaceType.ORC, OrcArmyCardType.Raven_Shaman));
             }
 
 
-            //指令卡25-28张
-            int OrderCount = random.Next(25, 29);
+            //指令卡24-28张
+            int OrderCount = random.Next(24, 29);
+            int AttackCount = 10;//攻击卡10
+            int DodgeCount = 5;//闪避卡5张
+            int BackAttackCount = 3;//反击卡3张
+            int RestCount = 2;//修养卡2张
+            int ShuffleCount = 2;//洗牌2张
+            int TakeCount = OrderCount - AttackCount - DodgeCount - BackAttackCount - RestCount - ShuffleCount;//抽卡
+
+            for(int i = 0; i < AttackCount; i ++)
+            {
+                //Order_Attack order_Attack = new Order_Attack();
+                //orderCardList.Add(order_Attack);
+                cardDtos.Add(new CardDto(CardId.Add_Get(),OrderCardType.ATTACK));
+            }
+
+            for(int i = 0; i < DodgeCount; i++)
+            {
+                //Order_Dodge order_Dodge = new Order_Dodge();
+                //orderCardList.Add(order_Dodge);
+                cardDtos.Add(new CardDto(CardId.Add_Get(), OrderCardType.DODGE));
+            }
+
+            for(int i = 0; i < BackAttackCount; i++)
+            {
+                //Order_BackAttack order_BackAttack = new Order_BackAttack();
+                //orderCardList.Add(order_BackAttack);
+                cardDtos.Add(new CardDto(CardId.Add_Get(), OrderCardType.BACKATTACK));
+            }
+
+            for(int i = 0; i < RestCount; i++)
+            {
+                //Order_Rest order_Rest = new Order_Rest();
+                //orderCardList.Add(order_Rest);
+                cardDtos.Add(new CardDto(CardId.Add_Get(), OrderCardType.REST));
+            }
+
+            for(int i = 0; i < ShuffleCount; i++)
+            {
+                // Order_Shuffle order_Shuffle = new Order_Shuffle();
+                //orderCardList.Add(order_Shuffle);
+                cardDtos.Add(new CardDto(CardId.Add_Get(), OrderCardType.SHUFFLE));
+            }
+
+            for(int i = 0; i < TakeCount; i++)
+            {
+                //Order_Take order_Take = new Order_Take();
+                //orderCardList.Add(order_Take);
+                cardDtos.Add(new CardDto(CardId.Add_Get(), OrderCardType.TAKE));
+            }
+
+
+            //非指令卡10-15张
+            int OtherCount = 56 - 17 - OrderCount;
+            int LandLifeCount = 1;//生息之地1张
+            int Recovery_siphonCount = 1;//复原虹吸1张
+            int Lightning_ChainCount = 1;//闪电链1
+            int Sky_fireCount = 1;//天火一张
+            int Totem_summonCount = 1;//召唤图腾1张
+            int Ground_fetter_netCount = 2;//地缚网2
+            int Ancestor_HelmetsCount = 1;//先祖头盔1
+            int Enhanced_ExplosivesCount = 1;//强化炸药1
+            int Toad_bombCount = OtherCount - LandLifeCount - Recovery_siphonCount - Lightning_ChainCount - Sky_fireCount - Totem_summonCount - Ground_fetter_netCount - Ancestor_HelmetsCount - Enhanced_ExplosivesCount;
+
+            for(int i = 0; i < LandLifeCount; i++)
+            {
+                //Orc_Other_LandLife orc_Other_LandLife = new Orc_Other_LandLife();
+                //otherCardList.Add(orc_Other_LandLife);
+                cardDtos.Add(new CardDto(CardId.Add_Get(),OtherCardType.ManorCard,RaceType.ORC,OrcOtherCardType.LandLife));
+            }
+
+            for(int i = 0; i < Recovery_siphonCount; i++)
+            {
+                //Orc_Other_Recoverysiphon orc_Other_Recoverysiphon = new Orc_Other_Recoverysiphon();
+                //otherCardList.Add(orc_Other_Recoverysiphon);
+                cardDtos.Add(new CardDto(CardId.Add_Get(), OtherCardType.MagicCard, RaceType.ORC, OrcOtherCardType.Recovery_siphon));
+            }
+
+            for(int i = 0; i < Lightning_ChainCount; i++)
+            {
+                //Orc_Other_LightningChain orc_Other_LightningChain = new Orc_Other_LightningChain();
+                //otherCardList.Add(orc_Other_LightningChain);
+                cardDtos.Add(new CardDto(CardId.Add_Get(), OtherCardType.MagicCard, RaceType.ORC, OrcOtherCardType.Lightning_Chain));
+            }
+
+            for(int i = 0; i < Sky_fireCount; i++)
+            {
+                //Orc_Other_Skyfire orc_Other_Skyfire = new Orc_Other_Skyfire();
+                //otherCardList.Add(orc_Other_Skyfire);
+                cardDtos.Add(new CardDto(CardId.Add_Get(), OtherCardType.MagicCard, RaceType.ORC, OrcOtherCardType.Sky_fire));
+            }
+
+            for(int i = 0; i < Totem_summonCount; i++)
+            {
+                //Orc_Other_Totemsummon orc_Other_Totemsummon = new Orc_Other_Totemsummon();
+                //otherCardList.Add(orc_Other_Totemsummon);
+                cardDtos.Add(new CardDto(CardId.Add_Get(), OtherCardType.MagicCard, RaceType.ORC, OrcOtherCardType.Totem_summon));
+            }
+
+            for(int i = 0; i < Ground_fetter_netCount; i++)
+            {
+                //Orc_Other_Groundfetternet orc_Other_Groundfetternet = new Orc_Other_Groundfetternet();
+                //otherCardList.Add(orc_Other_Groundfetternet);
+                cardDtos.Add(new CardDto(CardId.Add_Get(), OtherCardType.TrapCard, RaceType.ORC, OrcOtherCardType.Ground_fetter_net));
+            }
+
+            for(int i = 0; i < Ancestor_HelmetsCount; i++)
+            {
+                //Orc_Other_AncestorHelmets orc_Other_AncestorHelmets = new Orc_Other_AncestorHelmets();
+                //otherCardList.Add(orc_Other_AncestorHelmets);
+                cardDtos.Add(new CardDto(CardId.Add_Get(), OtherCardType.EquipCard, RaceType.ORC, OrcOtherCardType.Ancestor_Helmets));
+            }
+
+            for(int i = 0; i < Enhanced_ExplosivesCount; i++)
+            {
+                //Orc_Other_EnhancedExplosives orc_Other_EnhancedExplosives = new Orc_Other_EnhancedExplosives();
+                //otherCardList.Add(orc_Other_EnhancedExplosives);
+                cardDtos.Add(new CardDto(CardId.Add_Get(), OtherCardType.EquipCard, RaceType.ORC, OrcOtherCardType.Enhanced_Explosives));
+            }
+
+            for(int i = 0; i < Toad_bombCount; i++)
+            {
+                //Orc_Other_Toadbomb orc_Other_Toadbomb = new Orc_Other_Toadbomb();
+                //otherCardList.Add(orc_Other_Toadbomb);
+                cardDtos.Add(new CardDto(CardId.Add_Get(), OtherCardType.EquipCard, RaceType.ORC, OrcOtherCardType.Toad_bomb));
+            }
+
+
+            /*//把所有类型的牌装入牌库
+            foreach (var item in armycardList)
+            {
+                Cards.Add(item);
+            }
+
+            foreach (var item in orderCardList)
+            {
+                Cards.Add(item);
+            }
+
+            foreach (var item in otherCardList)
+            {
+                Cards.Add(item);
+            }*/
+            
         }
 
         private void Create()
@@ -165,20 +344,28 @@ namespace GameServer.Cache.Fight
         private void shuffle()
         {
             //List<int> listint = Enumerable.Range(1, 10000000).OrderBy(x => Guid.NewGuid()).Take(100000).ToList();
-            List<CardDto> shuffleCards = new List<CardDto>();
-            Queue<int> indexqueue = new Queue<int>();
+            //List<ICardBase> shuffleCards1 = new List<ICardBase>();
+            //List<ICardBase> shuffleCards2 = new List<ICardBase>();
+            List<CardDto> shuffleCards1 = new List<CardDto>();
+            List<CardDto> shuffleCards2 = new List<CardDto>();
+            //Queue<int> indexqueue = new Queue<int>();
+            List<int> indexList = new List<int>();
             bool hasindex = false;
-            for (int i = 0; i < 54; i++)
+
+
+            for (int i = 0; i < 56; i++)
             {
-                shuffleCards.Add(new CardDto());
+                shuffleCards1.Add(new CardDto());
+                shuffleCards2.Add(new CardDto());
                 while (true)
                 {
                     Random random = new Random(Guid.NewGuid().GetHashCode());
-                    int index = random.Next(0, 54);
-                    hasindex = indexqueue.Contains(index);
+                    int index = random.Next(0, 56);
+                    hasindex = indexList.Contains(index);
                     if (hasindex == false)
                     {
-                        indexqueue.Enqueue(index);
+                        //indexqueue.Enqueue(index);
+                        indexList.Add(index);
                         //Console.WriteLine(index);
                         hasindex = true;
                         break;
@@ -187,19 +374,33 @@ namespace GameServer.Cache.Fight
             }
 
 
-            /*foreach (var item in cardDtos)
+            for(int i = 0; i < 56; i++)
             {
-                int index = indexqueue.Dequeue();
-                //shuffleCards.Insert(index, item);
-                shuffleCards[index] = item;
+                int index = indexList[i];
+                shuffleCards1[index] = playercardDtos[0][i];
             }
 
-            cardDtos.Clear();
-
-            foreach (var item in shuffleCards)
+            for (int i = 0; i < 56; i++)
             {
-                cardDtos.Enqueue(item);
+                int index = indexList[i];
+                shuffleCards2[index] = playercardDtos[1][i];
+            }
+            /*for(int i = 0; i < 56; i++)
+            {
+                int index = indexqueue.Dequeue();
+                shuffleCards1[index] = playerCards[0][i];
+                shuffleCards2[index] = playerCards[1][i];
             }*/
+
+            //cardDtos.Clear();
+            playercardDtos[0].Clear();
+            playercardDtos[1].Clear();
+
+            for (int i = 0; i < 56; i++)
+            {
+                playercardDtos[0].Add(shuffleCards1[i]);
+                playercardDtos[1].Add(shuffleCards2[i]);
+            }
         }
 
         /// <summary>

@@ -20,7 +20,7 @@ namespace GameServer
         //断开连接
         public void OnDisConnect(ClientPeer clientPeer)
         {
-            //FightHandler.Instance.OnDisConnect(clientPeer);
+            FightHandler.Instance.OnDisConnect(clientPeer);
             //ChatHandler.Instance.OnDisConnect(clientPeer);
             MatchHandler.Instance.OnDisConnect(clientPeer);
             UserHandler.Instance.OnDisConnect(clientPeer);

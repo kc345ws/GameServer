@@ -10,6 +10,7 @@ using Protocol.Code;
 using Protocol.Dto.Fight;
 using ChcServer.Util.Concurrent;
 using GameServer.Model;
+using Protocol.Constants;
 
 namespace GameServer.Logic
 {
@@ -77,8 +78,8 @@ namespace GameServer.Logic
                     FightRoom fightRoom = FightRoomCache.Instance.GetRoomByUid(uid);
                     switch (race)
                     {
-                        case 0:
-                            fightRoom.UidRaceidDic.Add(uid, 0);
+                        case RaceType.ORC:
+                            fightRoom.UidRaceidDic.Add(uid, RaceType.ORC);
                             break;
                     }
 
@@ -100,22 +101,24 @@ namespace GameServer.Logic
                     fightRoom.Broadcast(OpCode.MATCH, MatchCode.START_GAME_BOD, "0");
 
                     //创建牌库
+                    fightRoom.CreateCardLibrary();
                     //初始化玩家手牌(发牌)
                     fightRoom.InitPlayerCards();
 
 
                     //对洗牌后的手牌进行整理
                     //fightRoom.Sort();
-                    /*foreach (var item in uidList)
+
+                    foreach (var item in fightRoom.playerDtos)
                     {
                         //给每个客户端发送自己的手牌信息
-                        List<CardDto> cardList = fightRoom.GetUserCard(item);
-                        ClientPeer clientPeer = UserCache.Instance.GetClientPeer(item);
-                        //clientPeer.StartSend(OpCode.FIGHT, FightCode.GET_CARD_SRES, cardList);
+                        List<CardDto> cardList = fightRoom.GetUserCard(item.UserID);
+                        ClientPeer clientPeer = UserCache.Instance.GetClientPeer(item.UserID);
+                        clientPeer.StartSend(OpCode.FIGHT, FightCode.GET_CARD_SRES, cardList);
                     }
 
                     //叫地主
-                    PlayerDto playerDto = fightRoom.GetFirstPlayer();//由第一个进入房间的首先叫地主
+                    //PlayerDto playerDto = fightRoom.GetFirstPlayer();//由第一个进入房间的首先叫地主
                     //fightRoom.Broadcast(OpCode.FIGHT, FightCode.GRAB_LANDLORD_SBOD, playerDto.UserID);
                     //轮到第一个玩家叫地主
                     //fightRoom.Broadcast(OpCode.FIGHT, FightCode.TURN_LANDLORD_SBOD, playerDto.UserID);*/
@@ -147,6 +150,7 @@ namespace GameServer.Logic
 
                     fightRoom.LeavePlayerDtos.Add(playerDto);
                     fightRoom.Leave(clientPeer);
+                    fightRoom.UidRaceidDic.Remove(uid);
 
                     if (fightRoom.LeavePlayerDtos.Count == 3)
                     {
