@@ -65,10 +65,43 @@ namespace GameServer.Logic
                 case FightCode.SELECT_RACE_CREQ:
                     processSelectRice(clientPeer, (int)value);
                     break;
+
+                case FightCode.MAP_SET_ARMY_CREQ:
+                    processMapSetArmy(clientPeer,value as MapPointDto);
+                    break;
             }
         }
 
+        /// <summary>
+        /// 处理地图放置兵种请求
+        /// </summary>
+        /// <param name="mapPointDto"></param>
+        private void processMapSetArmy(ClientPeer clientPeer,MapPointDto mapPointDto)
+        {
+            
+            SingleExecute.Instance.processSingle(
+                () =>
+                {
+                    if (!UserCache.Instance.IsOnline(clientPeer))
+                    {
+                        return;
+                    }
 
+                    int uid = UserCache.Instance.GetId(clientPeer);
+                    FightRoom fightRoom = FightRoomCache.Instance.GetRoomByUid(uid);
+
+                    //向房间内其他人发送消息
+                    fightRoom.Broadcast(OpCode.FIGHT, FightCode.MAP_SET_ARMY_SBOD, mapPointDto, clientPeer);
+                }
+                );
+        }
+        
+
+        /// <summary>
+        /// 处理种族选择请求
+        /// </summary>
+        /// <param name="clientPeer"></param>
+        /// <param name="race"></param>
         private void processSelectRice(ClientPeer clientPeer , int race)
         {
             SingleExecute.Instance.processSingle(
@@ -152,7 +185,7 @@ namespace GameServer.Logic
                     fightRoom.Leave(clientPeer);
                     fightRoom.UidRaceidDic.Remove(uid);
 
-                    if (fightRoom.LeavePlayerDtos.Count == 3)
+                    if (fightRoom.LeavePlayerDtos.Count >= 2)
                     {
                         //所有玩家都离开了
                         FightRoomCache.Instance.Destroy(fightRoom.ID);

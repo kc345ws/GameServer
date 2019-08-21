@@ -92,6 +92,7 @@
     <Compile Include="Dto\Fight\ChatDto.cs" />
     <Compile Include="Dto\Fight\DealDto.cs" />
     <Compile Include="Dto\Fight\LandLordDto.cs" />
+    <Compile Include="Dto\Fight\MapPointDto.cs" />
     <Compile Include="Dto\Fight\OverDto.cs" />
     <Compile Include="Dto\Fight\PlayerDto.cs" />
     <Compile Include="Dto\MatchRoomDto.cs" />

@@ -8,6 +8,8 @@ namespace Protocol.Constants.Map
     /// <summary>
     /// 地图点
     /// </summary>
+    /// 
+    [Serializable]
     public class MapPoint
     {
         public int X;

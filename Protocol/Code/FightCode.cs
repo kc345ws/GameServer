@@ -37,6 +37,15 @@ namespace Protocol.Code
         public const int SELECT_RACE_SBOD = 2;
 
 
-        public const int GET_CARD_SRES = 3;//服务器向客户端发送
+        public const int GET_CARD_SRES = 3;//服务器向客户端发送手牌信息
+
+        /// <summary>
+        /// 地图上设置兵种
+        /// </summary>
+        public const int MAP_SET_ARMY_CREQ = 4;
+        public const int MAP_SET_ARMY_SRES = 5;
+        public const int MAP_SET_ARMY_SBOD = 6;
+
+
     }
 }

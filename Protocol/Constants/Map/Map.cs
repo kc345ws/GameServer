@@ -16,7 +16,10 @@ namespace Protocol.Constants.Map
         public Dictionary<MapPoint, IArmyCardBase> Point_Army_Dict;
         public MapPoint[] mapPoints;
 
-        private int MapSize = 117;
+        /// <summary>
+        /// 地图点个数
+        /// </summary>
+        private int MapSize = 9 * 13;
 
         /// <summary>
         /// 行数
