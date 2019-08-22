@@ -32,6 +32,8 @@ namespace GameServer.Logic
                 }
             } }
 
+
+
         private FightHandler()
         {
             //MatchHandler.Instance.StartGameEvent += startGame;
@@ -69,7 +71,30 @@ namespace GameServer.Logic
                 case FightCode.MAP_SET_ARMY_CREQ:
                     processMapSetArmy(clientPeer,value as MapPointDto);
                     break;
+
+                case FightCode.DEAL_CARD_CREQ:
+                    processDealCard(clientPeer);
+                    break;
             }
+        }
+
+        private void processDealCard(ClientPeer clientPeer)
+        {
+            SingleExecute.Instance.processSingle(
+                () =>
+                {
+                    if (!UserCache.Instance.IsOnline(clientPeer))
+                    {
+                        return;
+                    }
+
+                    int uid = UserCache.Instance.GetId(clientPeer);
+                    FightRoom fightRoom = FightRoomCache.Instance.GetRoomByUid(uid);
+
+                    //在其他玩家客户端移除手牌
+                    fightRoom.Broadcast(OpCode.FIGHT, FightCode.DEAL_CARD_SBOD, 1, clientPeer);
+                }
+                );
         }
 
         /// <summary>

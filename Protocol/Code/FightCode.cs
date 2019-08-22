@@ -46,6 +46,18 @@ namespace Protocol.Code
         public const int MAP_SET_ARMY_SRES = 5;
         public const int MAP_SET_ARMY_SBOD = 6;
 
+        /// <summary>
+        /// 出牌
+        /// </summary>
+        public const int DEAL_CARD_CREQ = 7;
+        public const int DEAL_CARD_SRES = 8;
+        public const int DEAL_CARD_SBOD = 9;
 
+        /// <summary>
+        /// 兵种移动
+        /// </summary>
+        public const int MAP_ARMY_MOVE_CREQ = 10;
+        public const int MAP_ARMY_MOVE_SRES = 11;
+        public const int MAP_ARMY_MOVE_SBOD = 12;
     }
 }
