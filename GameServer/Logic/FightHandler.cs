@@ -75,9 +75,39 @@ namespace GameServer.Logic
                 case FightCode.DEAL_CARD_CREQ:
                     processDealCard(clientPeer);
                     break;
+
+                case FightCode.MAP_ARMY_MOVE_CREQ:
+                    ProcessArmyMove(clientPeer,value as MapMoveDto);
+                    break;
             }
         }
 
+        /// <summary>
+        /// 处理兵种移动请求
+        /// </summary>
+        private void ProcessArmyMove(ClientPeer clientPeer,MapMoveDto mapMoveDto)
+        {
+            SingleExecute.Instance.processSingle(
+                () =>
+                {
+                    if (!UserCache.Instance.IsOnline(clientPeer))
+                    {
+                        return;
+                    }
+
+                    int uid = UserCache.Instance.GetId(clientPeer);
+                    FightRoom fightRoom = FightRoomCache.Instance.GetRoomByUid(uid);
+
+                    //向房间内其他人传送移动信息
+                    fightRoom.Broadcast(OpCode.FIGHT, FightCode.MAP_ARMY_MOVE_SBOD, mapMoveDto, clientPeer);
+                }
+                );
+        }
+
+        /// <summary>
+        /// 处理出牌请求
+        /// </summary>
+        /// <param name="clientPeer"></param>
         private void processDealCard(ClientPeer clientPeer)
         {
             SingleExecute.Instance.processSingle(
