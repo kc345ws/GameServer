@@ -40,7 +40,7 @@ namespace Protocol.Constants.Map
         /// </summary>
         public const int All_Around = 5;
 
-        public List<MapPoint> GetAttakRange(IArmyCardBase armyCardBase)
+        public List<MapPoint> GetAttakRange(ArmyCardBase armyCardBase)
         {
             //可以攻击到的范围
             List<MapPoint> canAttckPoint = new List<MapPoint>();

@@ -48,6 +48,11 @@ namespace GameServer.Cache.Fight
         /// </summary>
         public int Multiple;*/
 
+            /// <summary>
+            /// 玩家兵种管理
+            /// </summary>
+        public List<ArmyCardBase>[] ArmyList { get; private set; }
+
         /// <summary>
         /// 回合管理类
         /// </summary>
@@ -70,6 +75,11 @@ namespace GameServer.Cache.Fight
             //TableCards = new List<CardDto>();
             roundModle = new RoundModle();
             UidRaceidDic = new Dictionary<int, int>();
+            ArmyList = new List<ArmyCardBase>[2];
+            for(int i = 0; i < 2; i++)
+            {
+                ArmyList[i] = new List<ArmyCardBase>();
+            }
         }
 
         /// <summary>

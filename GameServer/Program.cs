@@ -7,6 +7,7 @@ using ChcServer;
 using GameServer.DataBase;
 using GameServer.Modle;
 using MySql.Data.MySqlClient;
+using Protocol.Constants.Orc;
 
 namespace GameServer
 {
@@ -23,9 +24,10 @@ namespace GameServer
             Server.SetApplication(new NetMsgCenter());
             Server.Start(59800, 100);
 
-            //AccountModle accountModle = new AccountModle(0, "2314da", "fa");
-           // MysqlPeer.Instance.AddAccount(accountModle);
-                    
+
+
+
+
         Console.ReadKey();
         }
     }

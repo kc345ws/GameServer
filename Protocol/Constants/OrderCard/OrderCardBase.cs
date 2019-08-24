@@ -5,8 +5,8 @@ using System.Text;
 
 namespace Protocol.Constants
 {
-    public interface IOrderCardBase:ICardBase
+    public abstract class IOrderCardBase:CardBase
     {
-        void Effect();
+        protected void Effect() { }
     }
 }

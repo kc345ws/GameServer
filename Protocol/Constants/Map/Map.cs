@@ -13,7 +13,7 @@ namespace Protocol.Constants.Map
         /// <summary>
         /// 地图点与兵种卡的映射
         /// </summary>
-        public Dictionary<MapPoint, IArmyCardBase> Point_Army_Dict;
+        public Dictionary<MapPoint, ArmyCardBase> Point_Army_Dict;
         public MapPoint[] mapPoints;
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace Protocol.Constants.Map
 
         public Map()
         {
-            Point_Army_Dict = new Dictionary<MapPoint, IArmyCardBase>();
+            Point_Army_Dict = new Dictionary<MapPoint, ArmyCardBase>();
             mapPoints = new MapPoint[MapSize];
 
             Create();
@@ -52,7 +52,7 @@ namespace Protocol.Constants.Map
             }
         }
 
-        public MapPoint GetPosition(IArmyCardBase armyCardBase)
+        public MapPoint GetPosition(ArmyCardBase armyCardBase)
         {
             foreach (var item in Point_Army_Dict)
             {

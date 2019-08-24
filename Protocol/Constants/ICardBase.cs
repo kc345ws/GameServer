@@ -9,17 +9,17 @@ namespace Protocol.Constants
     /// 卡牌基类
     /// </summary>
     /// 
-    public interface ICardBase
+    public abstract class CardBase
     {
         /// <summary>
         /// 卡牌种类
         /// </summary>
-        int Type { get; set; }
+        public int Type;
 
         /// <summary>
         /// 卡牌名称
         /// </summary>
-        int Name { get; set; }
+        public int Name;
 
     }
 }

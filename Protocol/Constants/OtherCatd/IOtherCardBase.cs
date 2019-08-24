@@ -8,9 +8,9 @@ namespace Protocol.Constants
     /// <summary>
     /// 非指令卡基类
     /// </summary>
-    public interface IOtherCardBase : ICardBase
+    public abstract class IOtherCardBase : CardBase
     {
         int OtherType {get;set;}
-        void Effect();
+        protected void Effect() { }
     }
 }

@@ -6,52 +6,52 @@ using System.Text;
 
 namespace Protocol.Constants
 {
-    public interface IArmyCardBase :ICardBase
+    public abstract class ArmyCardBase :CardBase
     {
         /// <summary>
         /// 所属种族
         /// </summary>
-        int Race { get; set; }
+        public int Race;
 
         /// <summary>
         /// 兵种阶级
         /// </summary>
-        int Class { get; set; }
+        public int Class;
 
         /// <summary>
         /// 攻击力
         /// </summary>
-        int Damage { get; set; }
+        public int Damage;
 
         /// <summary>
         /// 最大血量
         /// </summary>
-        int MaxHp { get; set; }
+        public int MaxHp;
 
         /// <summary>
         /// 当前血量
         /// </summary>
-        int Hp { get; set; }
+        public int Hp;
 
         /// <summary>
         /// 移动速度
         /// </summary>
-        int Speed { get; set; }
+        public int Speed;
 
         /// <summary>
         /// 攻击范围类型
         /// </summary>
-        int AttackRangeType { get; set; }
+        public int AttackRangeType;
 
         /// <summary>
         /// 先在所处的位置
         /// </summary>
-        MapPoint Position { get; set; }
-        
+        public MapPoint Position;
+
 
         /// <summary>
         /// 兵种技能
         /// </summary>
-        void Skill();
+        public void Skill() { }
     }
 }

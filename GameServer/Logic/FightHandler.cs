@@ -145,8 +145,10 @@ namespace GameServer.Logic
                     int uid = UserCache.Instance.GetId(clientPeer);
                     FightRoom fightRoom = FightRoomCache.Instance.GetRoomByUid(uid);
 
-                    //向房间内其他人发送消息
+                    //向房间内其他人发送兵种放置消息
                     fightRoom.Broadcast(OpCode.FIGHT, FightCode.MAP_SET_ARMY_SBOD, mapPointDto, clientPeer);
+
+                    //
                 }
                 );
         }
