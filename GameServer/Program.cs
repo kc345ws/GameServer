@@ -25,9 +25,6 @@ namespace GameServer
             Server.Start(59800, 100);
 
 
-
-
-
         Console.ReadKey();
         }
     }
