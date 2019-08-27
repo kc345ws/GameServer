@@ -12,12 +12,12 @@ namespace Protocol.Dto.Fight
     [Serializable]
     public class OverDto
     {
-        public int WinIdentity;//获胜身份
+        //public int WinIdentity;//获胜身份
         public List<PlayerDto> WinidList;//获胜玩家ID列表
         public int BennCount;
 
         public OverDto(int winidentity, List<PlayerDto> winlist,int winbeencount) {
-            WinIdentity = winidentity;
+            //WinIdentity = winidentity;
             WinidList = winlist;
             BennCount = winbeencount;
         }

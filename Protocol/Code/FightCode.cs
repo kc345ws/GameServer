@@ -59,5 +59,12 @@ namespace Protocol.Code
         public const int MAP_ARMY_MOVE_CREQ = 10;
         public const int MAP_ARMY_MOVE_SRES = 11;
         public const int MAP_ARMY_MOVE_SBOD = 12;
+
+        /// <summary>
+        /// 兵种攻击
+        /// </summary>
+        public const int ARMY_ATTACK_CREQ = 13;
+        public const int ARMY_ATTACK_SRES = 14;
+        public const int ARMY_ATTACK_SBOD = 15;
     }
 }

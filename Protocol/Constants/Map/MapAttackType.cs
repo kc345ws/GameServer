@@ -10,6 +10,17 @@ namespace Protocol.Constants.Map
     /// </summary>
     public class MapAttackType
     {
+        private static MapAttackType instance;
+        public static MapAttackType Instance { get
+            {
+                if(instance == null)
+                {
+                    instance = new MapAttackType();
+                }
+                return instance;
+            } }
+
+        private MapAttackType() { }
         /// <summary>
         /// 攻击距离为0
         /// </summary>
