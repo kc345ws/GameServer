@@ -11,7 +11,15 @@ namespace Protocol.Constants
     public class ArmyMoveType
     {
         public const int NONE = 0;
+
+        /// <summary>
+        /// 陆地
+        /// </summary>
         public const int LAND = 1;
+
+        /// <summary>
+        /// 空中
+        /// </summary>
         public const int SKY = 2;
     }
 }
