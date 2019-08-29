@@ -9,6 +9,8 @@ namespace Protocol.Dto.Fight
     /// <summary>
     /// 地图攻击传输类
     /// </summary>
+    /// 
+    [Serializable]
     public class MapAttackDto
     {
         /// <summary>

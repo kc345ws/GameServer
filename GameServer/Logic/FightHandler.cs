@@ -77,15 +77,42 @@ namespace GameServer.Logic
                     break;
 
                 case FightCode.MAP_ARMY_MOVE_CREQ:
-                    ProcessArmyMove(clientPeer,value as MapMoveDto);
+                    processArmyMove(clientPeer,value as MapMoveDto);
+                    break;
+
+                case FightCode.ARMY_ATTACK_CREQ:
+                    processArmyAttack(clientPeer,value as MapAttackDto);
                     break;
             }
+
+        }
+
+        /// <summary>
+        /// 处理兵种攻击请求
+        /// </summary>
+        private void processArmyAttack(ClientPeer clientPeer,MapAttackDto mapAttackDto)
+        {
+            SingleExecute.Instance.processSingle(
+                () =>
+                {
+                    if (!UserCache.Instance.IsOnline(clientPeer))
+                    {
+                        return;
+                    }
+
+                    int uid = UserCache.Instance.GetId(clientPeer);
+                    FightRoom fightRoom = FightRoomCache.Instance.GetRoomByUid(uid);
+                    fightRoom.Broadcast(OpCode.FIGHT, FightCode.ARMY_ATTACK_SBOD, mapAttackDto, clientPeer);
+                    //向房间内其他人发送攻击请求
+
+                }
+                );
         }
 
         /// <summary>
         /// 处理兵种移动请求
         /// </summary>
-        private void ProcessArmyMove(ClientPeer clientPeer,MapMoveDto mapMoveDto)
+        private void processArmyMove(ClientPeer clientPeer,MapMoveDto mapMoveDto)
         {
             SingleExecute.Instance.processSingle(
                 () =>

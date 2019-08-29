@@ -48,6 +48,11 @@ namespace Protocol.Constants
         /// </summary>
         public MapPoint Position;
 
+        /// <summary>
+        /// 是否飞行
+        /// </summary>
+        public bool CanFly;
+
 
         /// <summary>
         /// 兵种技能
