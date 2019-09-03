@@ -18,9 +18,9 @@ namespace Protocol.Constants.Orc.OtherCard
             Name = OrcOtherCardType.Totem_summon;
         }
 
-        public int Type { get => Type; set => Type = value; }
-        public int Name { get => Name; set => Name = value; }
-        public int OtherType { get => OtherType; set => OtherType = value; }
+        //public int Type { get => Type; set => Type = value; }
+        //public int Name { get => Name; set => Name = value; }
+        //public int OtherType { get => OtherType; set => OtherType = value; }
 
         public void Effect()
         {

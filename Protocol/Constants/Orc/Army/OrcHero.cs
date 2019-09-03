@@ -15,11 +15,11 @@ namespace Protocol.Constants.Orc
         public OrcHero()
         {
             Type = CardType.ARMYCARD;
-            Name = OrcArmyCardType.Raven_Shaman;
+            Name = OrcArmyCardType.Hero;
 
             Race = RaceType.ORC;
             Class = ArmyClassType.Hero;
-            Damage = 1;
+            Damage = 2;
             MaxHp = 10;
             Hp = 10;
             Speed = 2;

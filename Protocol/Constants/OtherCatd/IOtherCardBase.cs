@@ -10,7 +10,7 @@ namespace Protocol.Constants
     /// </summary>
     public abstract class IOtherCardBase : CardBase
     {
-        int OtherType {get;set;}
-        protected void Effect() { }
+        public int OtherType {get;set;}
+        public void Effect() { }
     }
 }
