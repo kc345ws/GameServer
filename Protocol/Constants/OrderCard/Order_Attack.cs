@@ -14,8 +14,8 @@ namespace Protocol.Constants.OrderCard
             Name = OrderCardType.ATTACK;
         }
 
-        public int Type { get => Type; set => Type = value; }
-        public int Name { get => Name; set => Name = value; }
+        //public int Type { get => Type; set => Type = value; }
+       // public int Name { get => Name; set => Name = value; }
 
         public void Effect()
         {

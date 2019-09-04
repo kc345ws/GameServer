@@ -83,8 +83,35 @@ namespace GameServer.Logic
                 case FightCode.ARMY_ATTACK_CREQ:
                     processArmyAttack(clientPeer,value as MapAttackDto);
                     break;
+
+                case FightCode.DEAL_DODGE_CREQ:
+                    processDealDodge(clientPeer, (bool)value);
+                    break;
             }
 
+        }
+
+        /// <summary>
+        /// 处理闪避请求
+        /// </summary>
+        /// <param name="clientPeer"></param>
+        /// <param name="active"></param>
+        private void processDealDodge(ClientPeer clientPeer , bool active)
+        {
+            SingleExecute.Instance.processSingle(
+                () =>
+                {
+                    if (!UserCache.Instance.IsOnline(clientPeer))
+                    {
+                        return;
+                    }
+
+                    int uid = UserCache.Instance.GetId(clientPeer);
+                    FightRoom fightRoom = FightRoomCache.Instance.GetRoomByUid(uid);
+                    fightRoom.Broadcast(OpCode.FIGHT, FightCode.DEAL_DODGE_SBOD, active, clientPeer);
+                    //向房间内其他人发送闪避广播
+                }
+                );
         }
 
         /// <summary>

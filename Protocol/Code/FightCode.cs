@@ -66,5 +66,13 @@ namespace Protocol.Code
         public const int ARMY_ATTACK_CREQ = 13;
         public const int ARMY_ATTACK_SRES = 14;
         public const int ARMY_ATTACK_SBOD = 15;
+
+        /// <summary>
+        /// 闪避
+        /// </summary>
+        public const ushort DEAL_DODGE_CREQ = 16;
+        public const ushort DEAL_DODGE_SRES = 17;
+        public const ushort DEAL_DODGE_SBOD = 18;
+
     }
 }
