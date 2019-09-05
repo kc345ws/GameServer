@@ -179,8 +179,8 @@ namespace GameServer.Cache.Fight
             //指令卡24-28张
             int OrderCount = random.Next(24, 29);
             int AttackCount = 0;//攻击卡10
-            int DodgeCount = OrderCount;//闪避卡5张
-            int BackAttackCount = 0;//反击卡3张
+            int DodgeCount = 0;//闪避卡5张
+            int BackAttackCount = OrderCount;//反击卡3张
             int RestCount = 0;//修养卡2张
             int ShuffleCount = 0;//洗牌2张
             int TakeCount = 0;//抽卡

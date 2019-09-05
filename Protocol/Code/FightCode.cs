@@ -74,5 +74,10 @@ namespace Protocol.Code
         public const ushort DEAL_DODGE_SRES = 17;
         public const ushort DEAL_DODGE_SBOD = 18;
 
+        public const ushort DEAL_BACKATTACK_CREQ = 19;
+        public const ushort DEAL_BACKATTACK_SRES = 20;
+        public const ushort DEAL_BACKATTACK_SBOD = 21;
+
+
     }
 }
