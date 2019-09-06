@@ -91,8 +91,35 @@ namespace GameServer.Logic
                 case FightCode.DEAL_BACKATTACK_CREQ:
                     processDealBackAttack(clientPeer, (bool)value);
                     break;
+
+                case FightCode.DEAL_REST_CREQ:
+                    processDealRestAttack(clientPeer, value as MapPointDto);
+                    break;
             }
 
+        }
+
+        /// <summary>
+        /// 处理修养请求
+        /// </summary>
+        /// <param name="clientPeer"></param>
+        /// <param name="active"></param>
+        private void processDealRestAttack(ClientPeer clientPeer, MapPointDto mapPointDto)
+        {
+            SingleExecute.Instance.processSingle(
+                () =>
+                {
+                    if (!UserCache.Instance.IsOnline(clientPeer))
+                    {
+                        return;
+                    }
+
+                    int uid = UserCache.Instance.GetId(clientPeer);
+                    FightRoom fightRoom = FightRoomCache.Instance.GetRoomByUid(uid);
+                    fightRoom.Broadcast(OpCode.FIGHT, FightCode.DEAL_REST_SBOD, mapPointDto, clientPeer);
+                    //向房间内其他人发送修养广播
+                }
+                );
         }
 
         /// <summary>
@@ -361,7 +388,7 @@ namespace GameServer.Logic
                 );
         }
 
-        private void processdeal(ClientPeer client, DealDto dealDto)
+        /*private void processdeal(ClientPeer client, DealDto dealDto)
         {
             SingleExecute.Instance.processSingle(
                 () =>
@@ -389,7 +416,7 @@ namespace GameServer.Logic
                         client.StartSend(OpCode.FIGHT, FightCode.DEAL_SRES, false);
                         //向客户端回复不能出牌
                         return;
-                    }*/
+                    }
                     else
                     {
                         //向客户端发送发牌成功
@@ -417,7 +444,7 @@ namespace GameServer.Logic
                     }
                 }
                 );
-        }
+        }*/
 
         /// <summary>
         /// 转换出牌

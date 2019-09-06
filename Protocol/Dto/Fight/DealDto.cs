@@ -10,7 +10,7 @@ namespace Protocol.Dto.Fight
     /// 玩家出牌的数据传输对象
     /// </summary>
     /// 
-    [Serializable]
+    /*[Serializable]
     public class DealDto
     {
         /// <summary>
@@ -56,5 +56,5 @@ namespace Protocol.Dto.Fight
                 isRegular = false;
             }
         }
-    }
+    }*/
 }

@@ -74,10 +74,18 @@ namespace Protocol.Code
         public const ushort DEAL_DODGE_SRES = 17;
         public const ushort DEAL_DODGE_SBOD = 18;
 
+        /// <summary>
+        /// 反击
+        /// </summary>
         public const ushort DEAL_BACKATTACK_CREQ = 19;
         public const ushort DEAL_BACKATTACK_SRES = 20;
         public const ushort DEAL_BACKATTACK_SBOD = 21;
 
-
+        /// <summary>
+        /// 修养卡
+        /// </summary>
+        public const ushort DEAL_REST_CREQ = 22;
+        public const ushort DEAL_REST_SRES = 23;
+        public const ushort DEAL_REST_SBOD = 24;
     }
 }
