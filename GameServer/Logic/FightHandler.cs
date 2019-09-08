@@ -11,6 +11,7 @@ using Protocol.Dto.Fight;
 using ChcServer.Util.Concurrent;
 using GameServer.Model;
 using Protocol.Constants;
+using Protocol.Constants.Orc.OtherCard;
 
 namespace GameServer.Logic
 {
@@ -24,7 +25,7 @@ namespace GameServer.Logic
             {
                 lock (instance)
                 {
-                    if(instance == null)
+                    if (instance == null)
                     {
                         instance = new FightHandler();
                     }
@@ -48,28 +49,13 @@ namespace GameServer.Logic
         {
             switch (subcode)
             {
-                /*case FightCode.GRAB_LANDLORD_CREQ:
-                    grabLandlord(clientPeer, (bool)value);
-                    //true 抢 false不抢
-                    break;
-                case FightCode.DEAL_CREQ:
-                    processdeal(clientPeer, value as DealDto);
-                    break;
-
-                case FightCode.PASS_CREQ:
-                    processPass(clientPeer);
-                    break;
-
-                case FightCode.PLAYER_LEAVE_CREQ:
-                    processLeave(clientPeer);
-                    break;*/
 
                 case FightCode.SELECT_RACE_CREQ:
                     processSelectRice(clientPeer, (int)value);
                     break;
 
                 case FightCode.MAP_SET_ARMY_CREQ:
-                    processMapSetArmy(clientPeer,value as MapPointDto);
+                    processMapSetArmy(clientPeer, value as MapPointDto);
                     break;
 
                 case FightCode.DEAL_CARD_CREQ:
@@ -77,11 +63,11 @@ namespace GameServer.Logic
                     break;
 
                 case FightCode.MAP_ARMY_MOVE_CREQ:
-                    processArmyMove(clientPeer,value as MapMoveDto);
+                    processArmyMove(clientPeer, value as MapMoveDto);
                     break;
 
                 case FightCode.ARMY_ATTACK_CREQ:
-                    processArmyAttack(clientPeer,value as MapAttackDto);
+                    processArmyAttack(clientPeer, value as MapAttackDto);
                     break;
 
                 case FightCode.DEAL_DODGE_CREQ:
@@ -95,9 +81,59 @@ namespace GameServer.Logic
                 case FightCode.DEAL_REST_CREQ:
                     processDealRestAttack(clientPeer, value as MapPointDto);
                     break;
+
+                case FightCode.USE_OTHERCARD_CREQ:
+                    processOtherCard(clientPeer, value as CardDto);
+                    break;
+
+                case FightCode.DEAL_ATTACK_CREQ:
+                    processAttackCard(clientPeer);
+                    break;
             }
 
         }
+
+        /// <summary>
+        /// 处理攻击卡请求
+        /// </summary>
+        /// <param name="clientPeer"></param>
+        private void processAttackCard(ClientPeer clientPeer)
+        {
+            SingleExecute.Instance.processSingle(() =>
+            {
+                if (!UserCache.Instance.IsOnline(clientPeer))
+                {
+                    return;
+                }
+
+                int uid = UserCache.Instance.GetId(clientPeer);
+                FightRoom fightRoom = FightRoomCache.Instance.GetRoomByUid(uid);
+                fightRoom.Broadcast(OpCode.FIGHT, FightCode.DEAL_ATTACK_SBOD, "使用了攻击卡", clientPeer);
+
+            });
+        }
+
+        /// <summary>
+        /// 处理非指令卡
+        /// </summary>
+        /// <param name="clientPeer"></param>
+        /// <param name="cardDto"></param>
+        private void processOtherCard(ClientPeer clientPeer, CardDto cardDto)
+        {
+            SingleExecute.Instance.processSingle(() =>
+            {
+                if (!UserCache.Instance.IsOnline(clientPeer))
+                {
+                    return;
+                }
+
+                int uid = UserCache.Instance.GetId(clientPeer);
+                FightRoom fightRoom = FightRoomCache.Instance.GetRoomByUid(uid);
+                fightRoom.Broadcast(OpCode.FIGHT, FightCode.USE_OTHERCARD_SBOD, cardDto, clientPeer);
+
+            });
+            
+    }
 
         /// <summary>
         /// 处理修养请求

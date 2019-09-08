@@ -87,5 +87,19 @@ namespace Protocol.Code
         public const ushort DEAL_REST_CREQ = 22;
         public const ushort DEAL_REST_SRES = 23;
         public const ushort DEAL_REST_SBOD = 24;
+
+        /// <summary>
+        /// 使用非指令卡
+        /// </summary>
+        public const ushort USE_OTHERCARD_CREQ = 25;
+        public const ushort USE_OTHERCARD_SRES = 26;
+        public const ushort USE_OTHERCARD_SBOD = 27;
+
+        /// <summary>
+        /// 使用攻击卡
+        /// </summary>
+        public const ushort DEAL_ATTACK_CREQ = 28;
+        public const ushort DEAL_ATTACK_SRES = 29;
+        public const ushort DEAL_ATTACK_SBOD = 30;
     }
 }

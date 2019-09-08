@@ -177,7 +177,7 @@ namespace GameServer.Cache.Fight
             int ShuffleCount = 2;//洗牌2张
             int TakeCount = OrderCount - AttackCount - DodgeCount - BackAttackCount - RestCount - ShuffleCount;//抽卡*/
             //指令卡24-28张
-            int OrderCount = random.Next(24, 29);
+            int OrderCount = 0;
             int AttackCount = 0;//攻击卡10
             int DodgeCount = 0;//闪避卡5张
             int BackAttackCount = 0;//反击卡3张
@@ -229,7 +229,7 @@ namespace GameServer.Cache.Fight
 
 
             //非指令卡10-15张
-            int OtherCount = 56 - 17 - OrderCount;
+            /*int OtherCount = 56 - 17 - OrderCount;
             int LandLifeCount = 1;//生息之地1张
             int Recovery_siphonCount = 1;//复原虹吸1张
             int Lightning_ChainCount = 1;//闪电链1
@@ -238,9 +238,18 @@ namespace GameServer.Cache.Fight
             int Ground_fetter_netCount = 2;//地缚网2
             int Ancestor_HelmetsCount = 1;//先祖头盔1
             int Enhanced_ExplosivesCount = 1;//强化炸药1
-            int Toad_bombCount = OtherCount - LandLifeCount - Recovery_siphonCount - Lightning_ChainCount - Sky_fireCount - Totem_summonCount - Ground_fetter_netCount - Ancestor_HelmetsCount - Enhanced_ExplosivesCount;
-
-            for(int i = 0; i < LandLifeCount; i++)
+            int Toad_bombCount = OtherCount - LandLifeCount - Recovery_siphonCount - Lightning_ChainCount - Sky_fireCount - Totem_summonCount - Ground_fetter_netCount - Ancestor_HelmetsCount - Enhanced_ExplosivesCount;*/
+            int OtherCount = 56 - 17 - OrderCount;
+            int LandLifeCount = 0;//生息之地1张
+            int Recovery_siphonCount = 0;//复原虹吸1张
+            int Lightning_ChainCount = 0;//闪电链1
+            int Sky_fireCount = 0;//天火一张
+            int Totem_summonCount = 0;//召唤图腾1张
+            int Ground_fetter_netCount = 0;//地缚网2
+            int Ancestor_HelmetsCount = OtherCount;//先祖头盔1
+            int Enhanced_ExplosivesCount = 0;//强化炸药1
+            int Toad_bombCount = 0;
+            for (int i = 0; i < LandLifeCount; i++)
             {
                 //Orc_Other_LandLife orc_Other_LandLife = new Orc_Other_LandLife();
                 //otherCardList.Add(orc_Other_LandLife);
