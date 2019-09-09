@@ -33,8 +33,6 @@ namespace GameServer.Logic
                 }
             } }
 
-
-
         private FightHandler()
         {
             //MatchHandler.Instance.StartGameEvent += startGame;
@@ -50,47 +48,77 @@ namespace GameServer.Logic
             switch (subcode)
             {
 
-                case FightCode.SELECT_RACE_CREQ:
+                case FightCode.SELECT_RACE_CREQ://选择种族
                     processSelectRice(clientPeer, (int)value);
                     break;
 
-                case FightCode.MAP_SET_ARMY_CREQ:
+                case FightCode.MAP_SET_ARMY_CREQ://地图上放置单位
                     processMapSetArmy(clientPeer, value as MapPointDto);
                     break;
 
-                case FightCode.DEAL_CARD_CREQ:
+                case FightCode.DEAL_CARD_CREQ://出牌
                     processDealCard(clientPeer);
                     break;
 
-                case FightCode.MAP_ARMY_MOVE_CREQ:
+                case FightCode.MAP_ARMY_MOVE_CREQ://单位在地图上移动
                     processArmyMove(clientPeer, value as MapMoveDto);
                     break;
 
-                case FightCode.ARMY_ATTACK_CREQ:
+                case FightCode.ARMY_ATTACK_CREQ://单位攻击请求
                     processArmyAttack(clientPeer, value as MapAttackDto);
                     break;
 
-                case FightCode.DEAL_DODGE_CREQ:
+                case FightCode.DEAL_DODGE_CREQ://出闪避请求
                     processDealDodge(clientPeer, (bool)value);
                     break;
 
-                case FightCode.DEAL_BACKATTACK_CREQ:
+                case FightCode.DEAL_BACKATTACK_CREQ://出反击请求
                     processDealBackAttack(clientPeer, (bool)value);
                     break;
 
-                case FightCode.DEAL_REST_CREQ:
+                case FightCode.DEAL_REST_CREQ://出修养请求
                     processDealRestAttack(clientPeer, value as MapPointDto);
                     break;
 
-                case FightCode.USE_OTHERCARD_CREQ:
+                case FightCode.USE_OTHERCARD_CREQ://使用非指令卡
                     processOtherCard(clientPeer, value as CardDto);
                     break;
 
-                case FightCode.DEAL_ATTACK_CREQ:
+                case FightCode.DEAL_ATTACK_CREQ://出攻击卡
                     processAttackCard(clientPeer);
+                    break;
+
+
+                case FightCode.NEXT_TURN_CREQ://下一回合
+                    processNextTurn(clientPeer);
                     break;
             }
 
+        }
+
+        #region 战斗卡牌请求
+
+        /// <summary>
+        /// 处理出牌请求
+        /// </summary>
+        /// <param name="clientPeer"></param>
+        private void processDealCard(ClientPeer clientPeer)
+        {
+            SingleExecute.Instance.processSingle(
+                () =>
+                {
+                    if (!UserCache.Instance.IsOnline(clientPeer))
+                    {
+                        return;
+                    }
+
+                    int uid = UserCache.Instance.GetId(clientPeer);
+                    FightRoom fightRoom = FightRoomCache.Instance.GetRoomByUid(uid);
+
+                    //在其他玩家客户端移除手牌
+                    fightRoom.Broadcast(OpCode.FIGHT, FightCode.DEAL_CARD_SBOD, 1, clientPeer);
+                }
+                );
         }
 
         /// <summary>
@@ -132,8 +160,8 @@ namespace GameServer.Logic
                 fightRoom.Broadcast(OpCode.FIGHT, FightCode.USE_OTHERCARD_SBOD, cardDto, clientPeer);
 
             });
-            
-    }
+
+        }
 
         /// <summary>
         /// 处理修养请求
@@ -186,7 +214,7 @@ namespace GameServer.Logic
         /// </summary>
         /// <param name="clientPeer"></param>
         /// <param name="active"></param>
-        private void processDealDodge(ClientPeer clientPeer , bool active)
+        private void processDealDodge(ClientPeer clientPeer, bool active)
         {
             SingleExecute.Instance.processSingle(
                 () =>
@@ -203,11 +231,40 @@ namespace GameServer.Logic
                 }
                 );
         }
+        #endregion
+
+        #region 战斗单位请求
+
+        /// <summary>
+        /// 处理地图放置兵种请求
+        /// </summary>
+        /// <param name="mapPointDto"></param>
+        private void processMapSetArmy(ClientPeer clientPeer, MapPointDto mapPointDto)
+        {
+
+            SingleExecute.Instance.processSingle(
+                () =>
+                {
+                    if (!UserCache.Instance.IsOnline(clientPeer))
+                    {
+                        return;
+                    }
+
+                    int uid = UserCache.Instance.GetId(clientPeer);
+                    FightRoom fightRoom = FightRoomCache.Instance.GetRoomByUid(uid);
+
+                    //向房间内其他人发送兵种放置消息
+                    fightRoom.Broadcast(OpCode.FIGHT, FightCode.MAP_SET_ARMY_SBOD, mapPointDto, clientPeer);
+
+                    //
+                }
+                );
+        }
 
         /// <summary>
         /// 处理兵种攻击请求
         /// </summary>
-        private void processArmyAttack(ClientPeer clientPeer,MapAttackDto mapAttackDto)
+        private void processArmyAttack(ClientPeer clientPeer, MapAttackDto mapAttackDto)
         {
             SingleExecute.Instance.processSingle(
                 () =>
@@ -229,7 +286,7 @@ namespace GameServer.Logic
         /// <summary>
         /// 处理兵种移动请求
         /// </summary>
-        private void processArmyMove(ClientPeer clientPeer,MapMoveDto mapMoveDto)
+        private void processArmyMove(ClientPeer clientPeer, MapMoveDto mapMoveDto)
         {
             SingleExecute.Instance.processSingle(
                 () =>
@@ -247,12 +304,10 @@ namespace GameServer.Logic
                 }
                 );
         }
+        #endregion
 
-        /// <summary>
-        /// 处理出牌请求
-        /// </summary>
-        /// <param name="clientPeer"></param>
-        private void processDealCard(ClientPeer clientPeer)
+        #region 其他代码
+        private void processNextTurn(ClientPeer clientPeer)
         {
             SingleExecute.Instance.processSingle(
                 () =>
@@ -263,61 +318,50 @@ namespace GameServer.Logic
                     }
 
                     int uid = UserCache.Instance.GetId(clientPeer);
+                    //获得战斗房间
                     FightRoom fightRoom = FightRoomCache.Instance.GetRoomByUid(uid);
 
-                    //在其他玩家客户端移除手牌
-                    fightRoom.Broadcast(OpCode.FIGHT, FightCode.DEAL_CARD_SBOD, 1, clientPeer);
-                }
-                );
-        }
-
-        /// <summary>
-        /// 处理地图放置兵种请求
-        /// </summary>
-        /// <param name="mapPointDto"></param>
-        private void processMapSetArmy(ClientPeer clientPeer,MapPointDto mapPointDto)
-        {
-            
-            SingleExecute.Instance.processSingle(
-                () =>
-                {
-                    if (!UserCache.Instance.IsOnline(clientPeer))
+                    int nextuid = -1;//下一回合的玩家ID
+                    foreach (var item in fightRoom.playerDtos)
                     {
-                        return;
+                        if(item.UserID != uid)
+                        {
+                            nextuid = item.UserID;
+                            break;
+                        }
                     }
 
-                    int uid = UserCache.Instance.GetId(clientPeer);
-                    FightRoom fightRoom = FightRoomCache.Instance.GetRoomByUid(uid);
-
-                    //向房间内其他人发送兵种放置消息
-                    fightRoom.Broadcast(OpCode.FIGHT, FightCode.MAP_SET_ARMY_SBOD, mapPointDto, clientPeer);
-
-                    //
+                    fightRoom.Broadcast(OpCode.FIGHT, FightCode.NEXT_TURN_SBOD, nextuid);
                 }
                 );
         }
-        
 
         /// <summary>
         /// 处理种族选择请求
         /// </summary>
         /// <param name="clientPeer"></param>
         /// <param name="race"></param>
-        private void processSelectRice(ClientPeer clientPeer , int race)
+        private void processSelectRice(ClientPeer clientPeer, int race)
         {
             SingleExecute.Instance.processSingle(
                 () =>
                 {
+                    if (!UserCache.Instance.IsOnline(clientPeer))
+                    {
+                        return;
+                    }
+
                     int uid = UserCache.Instance.GetId(clientPeer);
+                    //获得战斗房间
                     FightRoom fightRoom = FightRoomCache.Instance.GetRoomByUid(uid);
                     switch (race)
                     {
-                        case RaceType.ORC:
+                        case RaceType.ORC://选择了兽族
                             fightRoom.UidRaceidDic.Add(uid, RaceType.ORC);
                             break;
                     }
 
-                    if(fightRoom.UidRaceidDic.Count >= fightRoom.playerDtos.Count)
+                    if (fightRoom.UidRaceidDic.Count >= fightRoom.playerDtos.Count)
                     {
                         //如果房间内的所有人都选择完了种族
                         startGame(fightRoom);
@@ -326,6 +370,10 @@ namespace GameServer.Logic
                 );
         }
 
+        /// <summary>
+        /// 开始游戏
+        /// </summary>
+        /// <param name="fightRoom"></param>
         private void startGame(FightRoom fightRoom)//List<int> uidList)
         {
             SingleExecute.Instance.processSingle(
@@ -337,11 +385,7 @@ namespace GameServer.Logic
                     //创建牌库
                     fightRoom.CreateCardLibrary();
                     //初始化玩家手牌(发牌)
-                    fightRoom.InitPlayerCards();
-
-
-                    //对洗牌后的手牌进行整理
-                    //fightRoom.Sort();
+                    fightRoom.InitPlayerCards();     
 
                     foreach (var item in fightRoom.playerDtos)
                     {
@@ -351,17 +395,18 @@ namespace GameServer.Logic
                         clientPeer.StartSend(OpCode.FIGHT, FightCode.GET_CARD_SRES, cardList);
                     }
 
-                    //叫地主
-                    //PlayerDto playerDto = fightRoom.GetFirstPlayer();//由第一个进入房间的首先叫地主
-                    //fightRoom.Broadcast(OpCode.FIGHT, FightCode.GRAB_LANDLORD_SBOD, playerDto.UserID);
-                    //轮到第一个玩家叫地主
-                    //fightRoom.Broadcast(OpCode.FIGHT, FightCode.TURN_LANDLORD_SBOD, playerDto.UserID);*/
+                    //由第一个进入房间的玩家首先开始回合
+                    PlayerDto firstPlayer = fightRoom.GetFirstPlayer();
+                    fightRoom.Broadcast(OpCode.FIGHT, FightCode.NEXT_TURN_SBOD, firstPlayer.UserID);
                 }
                 );
 
         }
 
-        #region 其他代码
+        /// <summary>
+        /// 处理玩家离开
+        /// </summary>
+        /// <param name="clientPeer"></param>
         private void processLeave(ClientPeer clientPeer)
         {
             SingleExecute.Instance.processSingle(
@@ -395,6 +440,10 @@ namespace GameServer.Logic
                 );
         }
 
+        /// <summary>
+        /// 玩家跳过
+        /// </summary>
+        /// <param name="clientPeer"></param>
         private void processPass(ClientPeer clientPeer)
         {
             SingleExecute.Instance.processSingle(
@@ -424,64 +473,6 @@ namespace GameServer.Logic
                 );
         }
 
-        /*private void processdeal(ClientPeer client, DealDto dealDto)
-        {
-            SingleExecute.Instance.processSingle(
-                () =>
-                {
-                    if (!UserCache.Instance.IsOnline(client))
-                    {
-                        return;
-                    }
-                    int uid = UserCache.Instance.GetId(client);
-
-                    FightRoom fightRoom = FightRoomCache.Instance.GetRoomByUid(uid);
-                    PlayerDto playerDto = fightRoom.GetPlayerDto(uid);
-                    if (fightRoom.LeavePlayerDtos.Contains(playerDto))
-                    {
-                        //如果玩家已经离开了
-                        //轮换出牌
-                        turn(fightRoom);
-                        return;
-                    }
-
-                    //发牌成功则移除手牌
-                    //bool candeal = fightRoom.IsDealCard(dealDto.Type, dealDto.Weight, dealDto.Length, uid, dealDto.SelectCards);
-                    /*if (!candeal)
-                    {
-                        client.StartSend(OpCode.FIGHT, FightCode.DEAL_SRES, false);
-                        //向客户端回复不能出牌
-                        return;
-                    }
-                    else
-                    {
-                        //向客户端发送发牌成功
-                        //client.StartSend(OpCode.FIGHT, FightCode.DEAL_SRES, true);
-
-
-
-                        List<CardDto> cardlist = fightRoom.GetUserCard(uid);
-
-                        //玩家剩余手牌
-                        dealDto.remainCards = cardlist;
-                        //向客户端广播出牌信息
-                        //fightRoom.Broadcast(OpCode.FIGHT, FightCode.DEAL_SBOD, dealDto);
-                        if (cardlist.Count == 0)
-                        {
-                            //若手牌发完则游戏结束
-                            gameover(fightRoom, uid);
-                            //fightRoom.Broadcast(OpCode.FIGHT, FightCode.GAME_OVER_SBOD, true);
-                        }
-                        else
-                        {
-                            //轮换出牌
-                            turn(fightRoom);
-                        }
-                    }
-                }
-                );
-        }*/
-
         /// <summary>
         /// 转换出牌
         /// </summary>
@@ -501,18 +492,23 @@ namespace GameServer.Logic
             }
         }
 
+        /// <summary>
+        /// 游戏结束
+        /// </summary>
+        /// <param name="fightRoom"></param>
+        /// <param name="winuid"></param>
         private void gameover(FightRoom fightRoom, int winuid)
         {
             PlayerDto playerDto = fightRoom.GetPlayerDto(winuid);
-            int winIdentity = playerDto.Identity;
-            List<PlayerDto> winList = fightRoom.GetSameIdentityPlayer(winIdentity);
-            List<PlayerDto> loseList = fightRoom.GetDiffIdentityPlayer(winIdentity);
+            //int winIdentity = playerDto.Identity;
+            //List<PlayerDto> winList = fightRoom.GetSameIdentityPlayer(winIdentity);
+            //List<PlayerDto> loseList = fightRoom.GetDiffIdentityPlayer(winIdentity);
             //int winbeen = fightRoom.Multiple * 100;
             //int losebeen = fightRoom.Multiple * 100 * 2;
             //int runbeen = fightRoom.Multiple * 100  * 3;
 
             //给胜利玩家增加
-            for (int i = 0; i < winList.Count; i++)
+            /*for (int i = 0; i < winList.Count; i++)
             {
                 ClientPeer client = UserCache.Instance.GetClientPeer(winList[i].UserID);
                 UserModel um = UserCache.Instance.GetModelByClientPeer(client);
@@ -564,50 +560,10 @@ namespace GameServer.Logic
             }
 
             //OverDto overDto = new OverDto(winIdentity, winList, winbeen);
-            //fightRoom.Broadcast(OpCode.FIGHT, FightCode.GAME_OVER_SBOD, overDto);
+            //fightRoom.Broadcast(OpCode.FIGHT, FightCode.GAME_OVER_SBOD, overDto);*/
         }
-
-        /// <summary>
-        /// 抢地主
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="active"></param>
-        private void grabLandlord(ClientPeer client, bool active)
-        {
-            SingleExecute.Instance.processSingle(
-                () =>
-                {
-                    if (!UserCache.Instance.IsOnline(client))
-                    {
-                        return;
-                    }
-                    int uid = UserCache.Instance.GetId(client);
-                    FightRoom fightRoom = FightRoomCache.Instance.GetRoomByUid(uid);
-
-                    if (active)
-                    {
-                        //设置为地主
-                        fightRoom.SetLandLord(uid);
-                        //向每个客户端发送底牌信息以及谁抢了
-                        //LandLordDto landLordDto = new LandLordDto(uid, fightRoom.TableCards);
-                        //fightRoom.Broadcast(OpCode.FIGHT, FightCode.GRAB_LANDLORD_SBOD, landLordDto);
-
-                        //通知房间内所有玩家，该玩家进行出牌
-                        //fightRoom.Broadcast(OpCode.FIGHT, FightCode.TURN_DEAL_SBOD, uid);
-                    }
-                    else
-                    {
-                        //不抢
-                        int nextuid = fightRoom.GetNextUid(uid);
-                        //fightRoom.Broadcast(OpCode.FIGHT, FightCode.TURN_LANDLORD_SBOD, nextuid);
-                        //下一个玩家继续抢
-                    }
-                }
-                );
-        }
-        #endregion
-
 
         
+        #endregion     
     }
 }

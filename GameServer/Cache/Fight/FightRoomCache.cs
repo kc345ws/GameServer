@@ -73,6 +73,7 @@ namespace GameServer.Cache.Fight
             }
             else
             {
+                //如果重用队列没有可用房间,则创建战斗房间
                 FightRoom fightRoom = new FightRoom(roomID.Add_Get(), uidList);
 
 

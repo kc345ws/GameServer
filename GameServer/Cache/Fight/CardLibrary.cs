@@ -397,7 +397,7 @@ namespace GameServer.Cache.Fight
                 shuffleCards1[index] = playercardDtos[0][i];
             }
 
-            for (int i = 0; i < 56; i++)
+            for (int i = 55; i >= 0; i--)
             {
                 int index = indexList[i];
                 shuffleCards2[index] = playercardDtos[1][i];

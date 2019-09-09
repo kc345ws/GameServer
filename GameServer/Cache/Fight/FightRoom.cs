@@ -267,39 +267,6 @@ namespace GameServer.Cache.Fight
         /// </summary>
         public void InitPlayerCards()
         {
-            //每人17张牌
-            /*for(int i = 0; i < 3; i++)
-            {
-                PlayerDto playerDto = playerDtos[i];
-                for(int j = 0; j < 17; j++)
-                {
-                   // CardDto cardDto = cardLibrary.DispatchCard();
-                   //playerDto.cardDtos.Add(cardDto);
-                }
-            }*/
-
-            //每人开局9张兵种卡 其余位于牌库
-            /*int playerIndex = 0;
-            foreach (var Cards in cardLibrary.playercardDtos)
-            {
-                int count = 0;
-                foreach (var item in Cards)
-                {
-                    if(item.Type == CardType.ARMYCARD)
-                    {
-                        count++;
-                        
-                        playerDtos[playerIndex].AddCard(item);
-                        Cards.Remove(item);
-                        if(count >= 8)
-                        {
-                            break;
-                        }
-                    }
-                }
-
-                playerIndex++;          
-            }*/
             for(int i = 0; i < 2; i++)
             {
                 int count = 0;
@@ -307,6 +274,7 @@ namespace GameServer.Cache.Fight
                 List<int> removeIndexlist = new List<int>();
                 foreach (var item in cardLibrary.playercardDtos[i])
                 {
+                    //开局每人9张兵种卡
                     if (item.Type == CardType.ARMYCARD)
                     {
                         count++;
@@ -322,6 +290,7 @@ namespace GameServer.Cache.Fight
                     index++;
                 }
 
+                //从牌库中删除发的牌
                 for(int j = 0; j < removeIndexlist.Count; j++)
                 {
                     cardLibrary.playercardDtos[i].RemoveAt(index);
@@ -332,7 +301,7 @@ namespace GameServer.Cache.Fight
             }
 
 
-            //每人开局摸5张牌
+            //每人开局摸5张其他牌
             for (int i = 0; i < 2; i++)
             {
                 for(int j = 0; j < 5; j++)
@@ -345,62 +314,10 @@ namespace GameServer.Cache.Fight
         }
 
         /// <summary>
-        /// 给地主发底牌
+        /// 获取玩家数据
         /// </summary>
         /// <param name="uid"></param>
-        /*public void DispatchTableCard(int uid)
-        {
-            PlayerDto player = null;
-            foreach (var item in playerDtos)
-            {
-                if(item.UserID == uid)
-                {
-                    player = item;
-                }
-            }
-
-            if(player !=null && player.Identity == PlayerIdentity.LANDLORD)
-            {
-                for(int i = 0; i < 3; i++)
-                {
-                    //player.cardDtos.Add(TableCards[i]);
-                }                
-            }
-            else
-            {
-                throw new Exception("设置底牌出错");
-            }
-        }*/
-
-        /// <summary>
-        /// 设置地主
-        /// </summary>
-        /// <param name="uid"></param>
-        public void SetLandLord(int uid)
-        {
-            PlayerDto player = null;
-            foreach (var item in playerDtos)
-            {
-                if (item.UserID == uid)
-                {
-                    player = item;
-                }
-            }
-
-            if (player != null)
-            {
-                //player.Identity = PlayerIdentity.LANDLORD;
-                //发底牌
-                //DispatchTableCard(uid);
-                //开始回合
-                roundModle.Start(uid);
-            }
-            else
-            {
-                throw new Exception("设置身份出错");
-            }
-        }
-
+        /// <returns></returns>
         public PlayerDto GetPlayerDto(int uid)
         {
             //in关键字不会改变内容
@@ -419,7 +336,7 @@ namespace GameServer.Cache.Fight
         /// </summary>
         /// <param name="identity"></param>
         /// <returns></returns>
-        public List<PlayerDto> GetSameIdentityPlayer(int identity)
+        /*public List<PlayerDto> GetSameIdentityPlayer(int identity)
         {
             List<PlayerDto> players = new List<PlayerDto>();
             foreach (var item in playerDtos)
@@ -430,14 +347,14 @@ namespace GameServer.Cache.Fight
                 }
             }
             return players;
-        }
+        }*/
 
         /// <summary>
         /// 获取不同身份的玩家信息
         /// </summary>
         /// <param name="identity"></param>
         /// <returns></returns>
-        public List<PlayerDto> GetDiffIdentityPlayer(int identity)
+        /*public List<PlayerDto> GetDiffIdentityPlayer(int identity)
         {
             List<PlayerDto> players = new List<PlayerDto>();
             foreach (var item in playerDtos)
@@ -448,12 +365,10 @@ namespace GameServer.Cache.Fight
                 }
             }
             return players;
-        }
-
-
+        }*/
 
         /// <summary>
-        /// 第一个进入房间的人第一个叫地主
+        /// 第一个进入房间的人首先开始
         /// </summary>
         /// <returns></returns>
         public PlayerDto GetFirstPlayer()

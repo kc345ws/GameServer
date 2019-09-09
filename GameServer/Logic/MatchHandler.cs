@@ -40,6 +40,7 @@ namespace GameServer.Logic
         }
         
         private MatchHandler() { }
+
         /// <summary>
         /// 断线
         /// </summary>
@@ -77,12 +78,17 @@ namespace GameServer.Logic
             }
         }
 
+        /// <summary>
+        /// 进入匹配队列
+        /// </summary>
+        /// <param name="clientPeer"></param>
         private void enter(ClientPeer clientPeer)
         {
             SingleExecute.Instance.processSingle(() =>
             {
                 if (!UserCache.Instance.IsOnline(clientPeer))
                 {
+                    //如果用户不在线
                     return;
                 }
 
@@ -157,6 +163,10 @@ namespace GameServer.Logic
             });
         }
 
+        /// <summary>
+        /// 准备
+        /// </summary>
+        /// <param name="clientPeer"></param>
         private void ready(ClientPeer clientPeer)
         {
             SingleExecute.Instance.processSingle(
@@ -184,6 +194,7 @@ namespace GameServer.Logic
                     //如果所有人都准备了则开始游戏
                     if (room.IsAllReady())
                     {
+                        //创建FightHandler
                         FightHandler.Instance.ToString();
 
                         /*if (StartGameEvent != null)

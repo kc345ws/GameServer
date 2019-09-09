@@ -7,28 +7,6 @@ namespace Protocol.Code
 {
     public class FightCode
     {
-        /*public const int GRAB_LANDLORD_CREQ = 0;
-        public const int GRAB_LANDLORD_SBOD = 1;//第一个叫的结果
-        public const int TURN_LANDLORD_SBOD = 2;//下一个抢的结果
-
-        public const int DEAL_CREQ = 3;
-        public const int DEAL_SRES = 4;
-        public const int DEAL_SBOD = 5;
-
-        public const int PASS_CREQ = 6;
-        public const int PASS_SRES = 7;
-
-        public const int TURN_DEAL_SBOD = 8;//转换出牌
-
-        public const int PLAYER_LEAVE_SBOD = 9;
-        public const int GAME_OVER_SBOD = 10;
-
-        public const int GET_CARD_CREQ = 11;
-        public const int GET_CARD_SRES = 12;
-
-        public const int PLAYER_LEAVE_CREQ = 13;//玩家离开房间*/
-
-
         /// <summary>
         /// 1兽族 2...3...
         /// </summary>
@@ -36,8 +14,10 @@ namespace Protocol.Code
         public const int SELECT_RACC_SRES = 1;
         public const int SELECT_RACE_SBOD = 2;
 
-
-        public const int GET_CARD_SRES = 3;//服务器向客户端发送手牌信息
+        /// <summary>
+        /// 服务器向客户端发送手牌信息
+        /// </summary>
+        public const int GET_CARD_SRES = 3;
 
         /// <summary>
         /// 地图上设置兵种
@@ -101,5 +81,12 @@ namespace Protocol.Code
         public const ushort DEAL_ATTACK_CREQ = 28;
         public const ushort DEAL_ATTACK_SRES = 29;
         public const ushort DEAL_ATTACK_SBOD = 30;
+
+        /// <summary>
+        /// 下一回合
+        /// </summary>
+        public const ushort NEXT_TURN_CREQ = 31;
+        public const ushort NEXT_TURN_SRES = 32;
+        public const ushort NEXT_TURN_SBOD = 33;
     }
 }
