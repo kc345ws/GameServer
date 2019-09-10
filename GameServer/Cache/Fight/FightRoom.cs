@@ -213,26 +213,49 @@ namespace GameServer.Cache.Fight
         /// </summary>
         public void InitPlayerCards()
         {
+            //兵种卡
             for(int i = 0; i < 2; i++)
             {
                 int count = 0;
                 int index = 0;
                 List<int> removeIndexlist = new List<int>();//要删除牌的索引
+
                 foreach (var item in cardLibrary.playercardDtos[i])
                 {
-                    //开局每人9张兵种卡
+                    //先加入英雄单位
+                    if(item.Type == CardType.ARMYCARD && item.Name == OrcArmyCardType.Hero)
+                    {
+                        playerDtos[i].AddCard(item);
+                        removeIndexlist.Add(index);
+                        break;
+                    }
+                    index++;
+                }
+                //从牌库中删除发的牌
+                for (int j = 0; j < removeIndexlist.Count; j++)
+                {
+                    cardLibrary.playercardDtos[i].RemoveAt(index);
+                }
+                count = 0;
+                index = 0;
+                removeIndexlist.Clear();
+
+                foreach (var item in cardLibrary.playercardDtos[i])
+                {
+                    //开局每人再加8张兵种卡
                     if (item.Type == CardType.ARMYCARD)
                     {
-                        count++;
+                        
 
                         //增加手牌
                         playerDtos[i].AddCard(item);
                         removeIndexlist.Add(index);
                         //Cards.Remove(item);
-                        if (count > 8)
+                        if (count > 7)
                         {
                             break;
                         }
+                        count++;
                     }
                     index++;
                 }
@@ -260,6 +283,7 @@ namespace GameServer.Cache.Fight
                     cardLibrary.playercardDtos[i].RemoveAt(j);
                 }
             }
+            
         }
 
         /// <summary>

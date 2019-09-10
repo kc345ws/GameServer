@@ -12,6 +12,7 @@ using ChcServer.Util.Concurrent;
 using GameServer.Model;
 using Protocol.Constants;
 using Protocol.Constants.Orc.OtherCard;
+using GameServer.DataBase;
 
 namespace GameServer.Logic
 {
@@ -91,6 +92,10 @@ namespace GameServer.Logic
 
                 case FightCode.NEXT_TURN_CREQ://下一回合
                     processNextTurn(clientPeer);
+                    break;
+
+                case FightCode.GAME_OVER_CREQ:
+                    processGameOver(clientPeer);
                     break;
             }
 
@@ -329,6 +334,57 @@ namespace GameServer.Logic
         #endregion
 
         #region 其他代码
+
+        private void processGameOver(ClientPeer clientPeer)
+        {
+            SingleExecute.Instance.processSingle(() =>
+            {
+                if (!UserCache.Instance.IsOnline(clientPeer))
+                {
+                    return;
+                }
+
+                int uid = UserCache.Instance.GetId(clientPeer);
+                //获得战斗房间
+                FightRoom fightRoom = FightRoomCache.Instance.GetRoomByUid(uid);
+
+                //玩家数据更新
+                UserModel userModel = UserCache.Instance.GetModelByClientPeer(clientPeer);
+                userModel.Exp += 20;
+                userModel.Money += 100;
+                if(userModel.Exp >= 100)
+                {
+                    userModel.Lv++;
+                }
+                MysqlPeer.Instance.UpdateUserInfo(userModel);
+
+                //向其他人广播游戏结束
+                fightRoom.Broadcast(OpCode.FIGHT, FightCode.GAME_OVER_SBOD, "游戏结束", clientPeer);
+
+                //更新其他人的数据
+                int otheruid = -1;
+                foreach (var item in fightRoom.playerDtos)
+                {
+                    if(item.UserID != uid)
+                    {
+                        
+                        otheruid = item.UserID;
+                        break;
+                    }
+                }
+                ClientPeer otherclientPeer = UserCache.Instance.GetClientPeer(otheruid);
+                userModel = UserCache.Instance.GetModelByClientPeer(otherclientPeer);
+                userModel.Exp += 5;
+                userModel.Money += 30;
+                if (userModel.Exp >= 100)
+                {
+                    userModel.Lv++;
+                }
+                MysqlPeer.Instance.UpdateUserInfo(userModel);
+
+                //TODO 销毁战斗房间
+            });
+        }
         /// <summary>
         /// 处理下一回合请求
         /// </summary>

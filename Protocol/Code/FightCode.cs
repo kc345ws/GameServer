@@ -95,5 +95,12 @@ namespace Protocol.Code
         public const ushort ADD_CARD_CREQ = 34;
         public const ushort ADD_CARD_SRES = 35;
         public const ushort ADD_CARD_SBOD = 36;
+
+        /// <summary>
+        /// 游戏结束
+        /// </summary>
+        public const ushort GAME_OVER_CREQ = 37;
+        public const ushort GAME_OVER_SRES = 38;
+        public const ushort GAME_OVER_SBOD = 39;
     }
 }
