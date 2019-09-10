@@ -56,8 +56,8 @@ namespace GameServer.Logic
                     processMapSetArmy(clientPeer, value as MapPointDto);
                     break;
 
-                case FightCode.DEAL_CARD_CREQ://出牌
-                    processDealCard(clientPeer);
+                case FightCode.DEAL_ARMYCARD_CREQ://使用兵种卡请求
+                    processDealCard(clientPeer , value as CardDto);
                     break;
 
                 case FightCode.MAP_ARMY_MOVE_CREQ://单位在地图上移动
@@ -102,7 +102,7 @@ namespace GameServer.Logic
         /// 处理出牌请求
         /// </summary>
         /// <param name="clientPeer"></param>
-        private void processDealCard(ClientPeer clientPeer)
+        private void processDealCard(ClientPeer clientPeer ,CardDto cardDto)
         {
             SingleExecute.Instance.processSingle(
                 () =>
@@ -115,8 +115,11 @@ namespace GameServer.Logic
                     int uid = UserCache.Instance.GetId(clientPeer);
                     FightRoom fightRoom = FightRoomCache.Instance.GetRoomByUid(uid);
 
+                    //在服务器上移除玩家兵种卡
+                    fightRoom.RemoveCard(uid, cardDto);
+
                     //在其他玩家客户端移除手牌
-                    fightRoom.Broadcast(OpCode.FIGHT, FightCode.DEAL_CARD_SBOD, 1, clientPeer);
+                    fightRoom.Broadcast(OpCode.FIGHT, FightCode.DEAL_ARMYCARD_SBOD, 1, clientPeer);
                 }
                 );
         }
@@ -136,8 +139,12 @@ namespace GameServer.Logic
 
                 int uid = UserCache.Instance.GetId(clientPeer);
                 FightRoom fightRoom = FightRoomCache.Instance.GetRoomByUid(uid);
+                
+                //发送攻击广播
                 fightRoom.Broadcast(OpCode.FIGHT, FightCode.DEAL_ATTACK_SBOD, "使用了攻击卡", clientPeer);
 
+                //在服务器上移除玩家攻击手牌
+                fightRoom.RemoveCard(uid, CardType.ORDERCARD, OrderCardType.ATTACK);
             });
         }
 
@@ -159,6 +166,8 @@ namespace GameServer.Logic
                 FightRoom fightRoom = FightRoomCache.Instance.GetRoomByUid(uid);
                 fightRoom.Broadcast(OpCode.FIGHT, FightCode.USE_OTHERCARD_SBOD, cardDto, clientPeer);
 
+                //在服务器上移除玩家相应非指令卡
+                fightRoom.RemoveCard(uid, cardDto);
             });
 
         }
@@ -182,6 +191,9 @@ namespace GameServer.Logic
                     FightRoom fightRoom = FightRoomCache.Instance.GetRoomByUid(uid);
                     fightRoom.Broadcast(OpCode.FIGHT, FightCode.DEAL_REST_SBOD, mapPointDto, clientPeer);
                     //向房间内其他人发送修养广播
+
+                    //在服务器移除修养指令卡
+                    fightRoom.RemoveCard(uid, CardType.ORDERCARD, OrderCardType.REST);
                 }
                 );
         }
@@ -203,8 +215,14 @@ namespace GameServer.Logic
 
                     int uid = UserCache.Instance.GetId(clientPeer);
                     FightRoom fightRoom = FightRoomCache.Instance.GetRoomByUid(uid);
-                    fightRoom.Broadcast(OpCode.FIGHT, FightCode.DEAL_BACKATTACK_SBOD, active, clientPeer);
+
                     //向房间内其他人发送闪避广播
+                    fightRoom.Broadcast(OpCode.FIGHT, FightCode.DEAL_BACKATTACK_SBOD, active, clientPeer);
+                    
+
+
+                    //在服务器上移除玩家反击手牌
+                    fightRoom.RemoveCard(uid, CardType.ORDERCARD, OrderCardType.BACKATTACK);
                 }
                 );
         }
@@ -226,8 +244,12 @@ namespace GameServer.Logic
 
                     int uid = UserCache.Instance.GetId(clientPeer);
                     FightRoom fightRoom = FightRoomCache.Instance.GetRoomByUid(uid);
-                    fightRoom.Broadcast(OpCode.FIGHT, FightCode.DEAL_DODGE_SBOD, active, clientPeer);
+
                     //向房间内其他人发送闪避广播
+                    fightRoom.Broadcast(OpCode.FIGHT, FightCode.DEAL_DODGE_SBOD, active, clientPeer);
+
+                    //在服务器上移除玩家闪避手牌
+                    fightRoom.RemoveCard(uid, CardType.ORDERCARD, OrderCardType.DODGE);
                 }
                 );
         }
@@ -307,6 +329,10 @@ namespace GameServer.Logic
         #endregion
 
         #region 其他代码
+        /// <summary>
+        /// 处理下一回合请求
+        /// </summary>
+        /// <param name="clientPeer"></param>
         private void processNextTurn(ClientPeer clientPeer)
         {
             SingleExecute.Instance.processSingle(
@@ -330,8 +356,18 @@ namespace GameServer.Logic
                             break;
                         }
                     }
+                    //下一回玩家的套接字连接对象
+                    ClientPeer nextClientpeer = UserCache.Instance.GetClientPeer(nextuid);
 
+                    //广播通知下一回合玩家
                     fightRoom.Broadcast(OpCode.FIGHT, FightCode.NEXT_TURN_SBOD, nextuid);
+                    //给下一回合的玩家发牌
+                    List<CardDto> cardlist = fightRoom.DispathCard(nextuid);
+                    //给玩家发送发牌消息
+                    //fightRoom.Broadcast(OpCode.FIGHT, FightCode.ADD_CARD_SRES, cardlist);
+                    nextClientpeer.StartSend(OpCode.FIGHT, FightCode.ADD_CARD_SRES, cardlist);
+                    //给房间内除了下一回合的玩家发送发牌消息
+                    fightRoom.Broadcast(OpCode.FIGHT, FightCode.ADD_CARD_SBOD, cardlist.Count, nextClientpeer);
                 }
                 );
         }

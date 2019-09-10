@@ -43,11 +43,6 @@ namespace GameServer.Cache.Fight
         /// </summary>
         public List<CardDto> TableCards { get; private set; }*/
 
-        /*/// <summary>
-        /// 倍数
-        /// </summary>
-        public int Multiple;*/
-
             /// <summary>
             /// 玩家兵种管理
             /// </summary>
@@ -61,7 +56,6 @@ namespace GameServer.Cache.Fight
         public FightRoom(int id , List<int>uidList)
         {
             ID = id;
-            //Multiple = 1;
 
             playerDtos = new List<PlayerDto>();
             foreach (var item in uidList)
@@ -156,72 +150,7 @@ namespace GameServer.Cache.Fight
             }
             throw new Exception("没有下个玩家");
         }
-
-        /*/// <summary>
-        /// 判断该出牌者的出牌能否大于上一个最大出牌
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="weight"></param>
-        /// <param name="length"></param>
-        /// <param name="uid">出牌玩家的ID</param>
-        /// <param name="cardlist">玩家想要出牌的列表</param>
-        /// <returns></returns>
-        public bool IsDealCard(int type, int weight, int length, int uid, List<CardDto> cardlist)
-        {
-            bool candeal = false;
-            //如果牌型相同且权值大于上一个出牌
-            if(type == roundModle.LastType && weight > roundModle.LastWeight)
-            {
-                //如果为顺子还要对长度进行限制
-                if(type == CardType.STRIGHT || type == CardType.DOUBLE_STRIGHT || type == CardType.THREE_STRIGHT)
-                {
-                    if(length == roundModle.LastLength)
-                    {
-                        candeal = true;
-                    }
-                }
-                else//其他牌型
-                {
-                    candeal = true;
-                }
-            }
-
-            else if(type == CardType.BOOM && roundModle.LastType != CardType.JOKER_BOOM)
-            {
-                candeal = true;
-            }
-
-            else if(type == CardType.JOKER_BOOM)
-            {
-                candeal = true;
-            }
-            else if(uid == roundModle.BiggestUid)
-            {
-                candeal = true;//如果是第一次出牌或者是最大出牌者
-            }
-
-            if (candeal)
-            {
-                //如果能出牌则移除玩家的手牌
-                RemoveCard(uid, cardlist);
-
-                //翻倍
-                if(type == CardType.BOOM)
-                {
-                    Multiple *= 2;
-                }else if(type == CardType.JOKER_BOOM)
-                {
-                    Multiple *= 4;
-                }
-
-                //改变回合的最大出牌信息
-                roundModle.Change(uid, length, weight, type);
-            }
-
-            return candeal;
-        }*/
-
-
+     
         /// <summary>
         /// 获取玩家的当前手牌
         /// </summary>
@@ -245,19 +174,36 @@ namespace GameServer.Cache.Fight
         /// </summary>
         /// <param name="uid">要移除手牌的玩家ID</param>
         /// <param name="cardlist">要移除手牌的集合</param>
-        public void RemoveCard(int uid, List<CardDto> cardlist)
+        public void RemoveCard(int uid, CardDto removeCard)
         {
             List<CardDto> playercardlist = GetUserCard(uid);
 
-            for(int i = 0; i < cardlist.Count; i++)
+            foreach (var item in playercardlist)
             {
-                foreach (var item in playercardlist)
+               if(item.ID == removeCard.ID)
+               {
+                    playercardlist.Remove(item);
+                    break;
+               }
+            }
+        }
+
+        /// <summary>
+        /// 移除玩家手牌
+        /// </summary>
+        /// <param name="uid"></param>
+        /// <param name="type">手牌类型</param>
+        /// <param name="name">手牌名称</param>
+        public void RemoveCard(int uid, int type ,int name)
+        {
+            List<CardDto> playercardlist = GetUserCard(uid);
+
+            foreach (var item in playercardlist)
+            {
+                if (item.Type == type && item.Name == name)
                 {
-                    /*if(item.ID == cardlist[i].ID)
-                    {
-                        playercardlist.Remove(item);
-                        break;
-                    }*/
+                    playercardlist.Remove(item);
+                    break;
                 }
             }
         }
@@ -271,7 +217,7 @@ namespace GameServer.Cache.Fight
             {
                 int count = 0;
                 int index = 0;
-                List<int> removeIndexlist = new List<int>();
+                List<int> removeIndexlist = new List<int>();//要删除牌的索引
                 foreach (var item in cardLibrary.playercardDtos[i])
                 {
                     //开局每人9张兵种卡
@@ -279,6 +225,7 @@ namespace GameServer.Cache.Fight
                     {
                         count++;
 
+                        //增加手牌
                         playerDtos[i].AddCard(item);
                         removeIndexlist.Add(index);
                         //Cards.Remove(item);
@@ -306,12 +253,36 @@ namespace GameServer.Cache.Fight
             {
                 for(int j = 0; j < 5; j++)
                 {
+                    //增加手牌
                     playerDtos[i].AddCard(cardLibrary.playercardDtos[i][j]);
 
+                    //从牌库中删除发的牌
                     cardLibrary.playercardDtos[i].RemoveAt(j);
                 }
             }
         }
+
+        /// <summary>
+        /// 给玩家每回合发牌
+        /// </summary>
+        /// <param name="uid"></param>
+        public List<CardDto> DispathCard(int uid)
+        {
+            PlayerDto player = GetPlayerDto(uid);
+            List<CardDto> cardList = new List<CardDto>();
+            for (int i = 0; i < 2; i++)
+            {
+                CardDto cardDto = cardLibrary.DispatchCard(uid);
+                
+                if(cardDto == null)
+                {
+                    break;
+                }
+                player.AddCard(cardDto);
+                cardList.Add(cardDto);
+            }
+            return cardList;
+        }    
 
         /// <summary>
         /// 获取玩家数据
@@ -332,42 +303,6 @@ namespace GameServer.Cache.Fight
         }
 
         /// <summary>
-        /// 获取相同身份的玩家数据模型,用来结算
-        /// </summary>
-        /// <param name="identity"></param>
-        /// <returns></returns>
-        /*public List<PlayerDto> GetSameIdentityPlayer(int identity)
-        {
-            List<PlayerDto> players = new List<PlayerDto>();
-            foreach (var item in playerDtos)
-            {
-                if(item.Identity == identity)
-                {
-                    players.Add(item);
-                }
-            }
-            return players;
-        }*/
-
-        /// <summary>
-        /// 获取不同身份的玩家信息
-        /// </summary>
-        /// <param name="identity"></param>
-        /// <returns></returns>
-        /*public List<PlayerDto> GetDiffIdentityPlayer(int identity)
-        {
-            List<PlayerDto> players = new List<PlayerDto>();
-            foreach (var item in playerDtos)
-            {
-                if (item.Identity != identity)
-                {
-                    players.Add(item);
-                }
-            }
-            return players;
-        }*/
-
-        /// <summary>
         /// 第一个进入房间的人首先开始
         /// </summary>
         /// <returns></returns>
@@ -380,7 +315,7 @@ namespace GameServer.Cache.Fight
         /// 按升序排序手牌
         /// </summary>
         /// <param name="cardList"></param>
-        /// <param name="asc"></param>
+        /// <param name="asc">是否升序</param>
        /* private void SortCard(List<CardDto> cardList,bool asc =true)//asc升序 des降序
         {
             cardList.Sort(delegate (CardDto a, CardDto b)
@@ -394,12 +329,8 @@ namespace GameServer.Cache.Fight
                     //return a.Weight.CompareTo(b.Weight) * -1;
                 }
             });
-
-           
-
         }*/
-
-        
+      
         public void Sort(bool asc = true)
         {
             //SortCard(playerDtos[0].cardDtos);

@@ -18,6 +18,9 @@ namespace GameServer.Cache.Fight
     public class CardLibrary
     {
         //public Queue<CardDto> []playercardDtos = new Queue<CardDto>[2];
+        /// <summary>
+        /// 玩家手牌
+        /// </summary>
         public List<CardDto>[] playercardDtos = new List<CardDto>[2];
 
         //public List<IArmyCardBase>[] ArmyCards = new List<IArmyCardBase>[2];
@@ -31,7 +34,8 @@ namespace GameServer.Cache.Fight
         /// </summary>
         public Dictionary<int, List<CardDto>> UidCardsDic = new Dictionary<int, List<CardDto>>();
 
-        private ConcurrentInt CardId = new ConcurrentInt(-1);
+        private ConcurrentInt CardId = new ConcurrentInt(-1);//卡牌ID初始为-1
+        private Dictionary<int, int> uid_indexDict = new Dictionary<int, int>();//玩家ID与索引的映射
 
         /*public CardLibrary()
         {
@@ -43,7 +47,9 @@ namespace GameServer.Cache.Fight
 
         public CardLibrary(Dictionary<int, int> UidRaceidDic)
         {
+            //创建牌
             Create(UidRaceidDic);
+            //洗牌
             shuffle();
         }
 
@@ -58,7 +64,7 @@ namespace GameServer.Cache.Fight
         private void Create(Dictionary<int, int> UidRaceidDic)
         {
             int race = -1;
-            Queue<int> uidQueue = new Queue<int>();
+            Queue<int> uidQueue = new Queue<int>();//玩家ID队列
 
             foreach (var item in UidRaceidDic.Keys)
             {
@@ -68,23 +74,26 @@ namespace GameServer.Cache.Fight
             for(int playerindex = 0; playerindex < UidRaceidDic.Count; playerindex++)
             {
                 race = UidRaceidDic[playerindex];
-                
+               
 
                 switch (race)
                 {
                     case RaceType.ORC:
                         //兽族
+                        int uid = uidQueue.Dequeue();
                         CreateOrc(playerindex);
-                        UidCardsDic.Add(uidQueue.Dequeue(), playercardDtos[playerindex]);
+                        UidCardsDic.Add(uid, playercardDtos[playerindex]);
 
+                        uid_indexDict.Add(uid, playerindex);
                         break;
                 }
             }
         }
 
         /// <summary>
-        /// 创建兽族牌组
+        /// 创建兽族牌库
         /// </summary>
+        /// <param name="playerIndex">玩家索引</param>
         private void CreateOrc(int playerIndex)
         {
             //List<IArmyCardBase> armycardList = ArmyCards[playerIndex];
@@ -99,16 +108,16 @@ namespace GameServer.Cache.Fight
             //17张兵种牌
             int ordinaryCount = random.Next(7, 12);//普通兵种7-11张
             int middleCount = random.Next(0, 6);//中级0-5           
-            int HeroCount = 1;
+            int HeroCount = 1;//英雄一张
             //剩余为髙阶
             int highCount = 17 - ordinaryCount - middleCount - HeroCount;
 
-            int infantryCount = random.Next(ordinaryCount);//兽族步兵
+            int infantryCount = random.Next(ordinaryCount / 2);//兽族步兵
             int eagleCount = ordinaryCount - infantryCount;//鹰骑士
-            int blackRatsCount = random.Next(middleCount);//黑鼠爆破手
-            int FrogCount = (middleCount - blackRatsCount)/2;//巨口蛙
+            int blackRatsCount = random.Next(middleCount / 2);//黑鼠爆破手
+            int FrogCount = (middleCount - blackRatsCount) / 2;//巨口蛙
             int ForestCount = middleCount - FrogCount - blackRatsCount;//射手
-            int PangolinCount = random.Next(highCount);//穿山甲
+            int PangolinCount = random.Next(highCount / 2);//穿山甲
             int RavenShamanCount = highCount - PangolinCount;//乌鸦萨满
 
             for(int i = 0; i < HeroCount; i++)
@@ -169,21 +178,23 @@ namespace GameServer.Cache.Fight
 
 
             //指令卡24-28张
-            /*int OrderCount = random.Next(24, 29);
-            int AttackCount = 10;//攻击卡10
-            int DodgeCount = 5;//闪避卡5张
-            int BackAttackCount = 3;//反击卡3张
-            int RestCount = 2;//修养卡2张
-            int ShuffleCount = 2;//洗牌2张
-            int TakeCount = OrderCount - AttackCount - DodgeCount - BackAttackCount - RestCount - ShuffleCount;//抽卡*/
+            int OrderCount = random.Next(24, 29);
+            int AttackCount = 9;//攻击卡9
+            int DodgeCount = 6;//闪避卡6张
+            int BackAttackCount = 4;//反击卡4张
+            int RestCount = OrderCount - AttackCount - DodgeCount - BackAttackCount;//修养卡
+            int ShuffleCount = 0;//洗牌0张张
+            //int TakeCount = OrderCount - AttackCount - DodgeCount - BackAttackCount - RestCount - ShuffleCount;
+            int TakeCount = 0;//抽卡0张
+
             //指令卡24-28张
-            int OrderCount = 0;
+            /*int OrderCount = 0;
             int AttackCount = 0;//攻击卡10
             int DodgeCount = 0;//闪避卡5张
             int BackAttackCount = 0;//反击卡3张
             int RestCount = OrderCount;//修养卡2张
             int ShuffleCount = 0;//洗牌2张
-            int TakeCount = 0;//抽卡
+            int TakeCount = 0;//抽卡*/
 
             for (int i = 0; i < AttackCount; i ++)
             {
@@ -229,17 +240,23 @@ namespace GameServer.Cache.Fight
 
 
             //非指令卡10-15张
-            /*int OtherCount = 56 - 17 - OrderCount;
+            int OtherCount = 56 - 17 - OrderCount;
             int LandLifeCount = 1;//生息之地1张
-            int Recovery_siphonCount = 1;//复原虹吸1张
-            int Lightning_ChainCount = 1;//闪电链1
-            int Sky_fireCount = 1;//天火一张
-            int Totem_summonCount = 1;//召唤图腾1张
-            int Ground_fetter_netCount = 2;//地缚网2
+            int Recovery_siphonCount = 1;//复原虹吸1张       
+            int Sky_fireCount = 1;//天火一张                      
             int Ancestor_HelmetsCount = 1;//先祖头盔1
             int Enhanced_ExplosivesCount = 1;//强化炸药1
-            int Toad_bombCount = OtherCount - LandLifeCount - Recovery_siphonCount - Lightning_ChainCount - Sky_fireCount - Totem_summonCount - Ground_fetter_netCount - Ancestor_HelmetsCount - Enhanced_ExplosivesCount;*/
-            int OtherCount = 56 - 17 - OrderCount;
+
+            int restOther = (OtherCount - LandLifeCount - Recovery_siphonCount - Sky_fireCount - Ancestor_HelmetsCount - Enhanced_ExplosivesCount);//剩余非指令卡
+            int Totem_summonCount = restOther / 2;//召唤图腾1张 
+            restOther -= Totem_summonCount;
+            int Ground_fetter_netCount = Totem_summonCount / 2;//地缚网2
+            restOther -= Ground_fetter_netCount;
+            int Lightning_ChainCount = Ground_fetter_netCount / 2;//闪电链1
+            restOther -= Lightning_ChainCount;
+            int Toad_bombCount = restOther;//蟾蜍炸弹
+
+            /*int OtherCount = 56 - 17 - OrderCount;
             int LandLifeCount = 0;//生息之地1张
             int Recovery_siphonCount = 0;//复原虹吸1张
             int Lightning_ChainCount = 0;//闪电链1
@@ -248,7 +265,8 @@ namespace GameServer.Cache.Fight
             int Ground_fetter_netCount = 0;//地缚网2
             int Ancestor_HelmetsCount = OtherCount;//先祖头盔1
             int Enhanced_ExplosivesCount = 0;//强化炸药1
-            int Toad_bombCount = 0;
+            int Toad_bombCount = 0;*/
+
             for (int i = 0; i < LandLifeCount; i++)
             {
                 //Orc_Other_LandLife orc_Other_LandLife = new Orc_Other_LandLife();
@@ -329,31 +347,7 @@ namespace GameServer.Cache.Fight
                 Cards.Add(item);
             }*/
             
-        }
-
-        private void Create()
-        {
-            /*
-            //从黑桃到方片
-            for(int color = CardColor.SPADE; color <= CardColor.DIAMOND; color++)
-            {
-                //从3到2
-                for(int weight = CardWeight.THREE; weight <= CardWeight.TWO; weight++)
-                {
-                    CardDto cardDto = new CardDto(CardId, CardColor.GetName(color) + CardWeight.GetName(weight), color, weight);
-                    CardId++;
-                    cardDtos.Enqueue(cardDto);
-                }
-            }
-
-            CardDto smallJocker = new CardDto(CardId, CardWeight.GetName(CardWeight.SMALLJOKER), CardColor.NONE, CardWeight.SMALLJOKER);
-            CardId++;
-            cardDtos.Enqueue(smallJocker);
-
-            CardDto bigJoker = new CardDto(CardId, CardWeight.GetName(CardWeight.BIGJOKER), CardColor.NONE, CardWeight.BIGJOKER);
-            CardId++;
-            cardDtos.Enqueue(bigJoker);*/
-        }
+        }       
 
         /// <summary>
         /// 洗牌
@@ -424,10 +418,38 @@ namespace GameServer.Cache.Fight
         /// 发牌
         /// </summary>
         /// <returns></returns>
-        /*public CardDto DispatchCard()
+        public CardDto DispatchCard(int uid)
         {
-            //return cardDtos.Dequeue();
-        }*/
+            int playerIndex = getIndexByUid(uid);
+            if(playerIndex == -1)
+            {
+                throw new Exception("牌库获取玩家索引出错");
+            }
+
+            if (playercardDtos[playerIndex][0] != null)
+            {
+                CardDto cardDto = playercardDtos[playerIndex][0];
+                playercardDtos[playerIndex].RemoveAt(0);
+                return cardDto;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 通过玩家ID获得玩家索引
+        /// </summary>
+        /// <returns></returns>
+        private int getIndexByUid(int uid)
+        {
+            foreach (var item in uid_indexDict)
+            {
+                if(item.Key == uid)
+                {
+                    return item.Value;
+                }
+            }
+            return -1;
+        }
 
     }
 }

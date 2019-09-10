@@ -15,7 +15,7 @@ namespace Protocol.Code
         public const int SELECT_RACE_SBOD = 2;
 
         /// <summary>
-        /// 服务器向客户端发送手牌信息
+        /// 服务器向客户端发送创建手牌信息
         /// </summary>
         public const int GET_CARD_SRES = 3;
 
@@ -27,11 +27,11 @@ namespace Protocol.Code
         public const int MAP_SET_ARMY_SBOD = 6;
 
         /// <summary>
-        /// 出牌
+        /// 出兵种牌
         /// </summary>
-        public const int DEAL_CARD_CREQ = 7;
-        public const int DEAL_CARD_SRES = 8;
-        public const int DEAL_CARD_SBOD = 9;
+        public const int DEAL_ARMYCARD_CREQ = 7;
+        public const int DEAL_ARMYCARD_SRES = 8;
+        public const int DEAL_ARMYCARD_SBOD = 9;
 
         /// <summary>
         /// 兵种移动
@@ -88,5 +88,12 @@ namespace Protocol.Code
         public const ushort NEXT_TURN_CREQ = 31;
         public const ushort NEXT_TURN_SRES = 32;
         public const ushort NEXT_TURN_SBOD = 33;
+
+        /// <summary>
+        /// 增加手牌
+        /// </summary>
+        public const ushort ADD_CARD_CREQ = 34;
+        public const ushort ADD_CARD_SRES = 35;
+        public const ushort ADD_CARD_SBOD = 36;
     }
 }
