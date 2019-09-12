@@ -114,7 +114,7 @@ namespace GameServer.Cache.Fight
 
             int infantryCount = random.Next(ordinaryCount / 2);//兽族步兵
             int eagleCount = ordinaryCount - infantryCount;//鹰骑士
-            int blackRatsCount = random.Next(middleCount / 2);//黑鼠爆破手
+            int blackRatsCount = 0;//黑鼠爆破手
             int FrogCount = (middleCount - blackRatsCount) / 2;//巨口蛙
             int ForestCount = middleCount - FrogCount - blackRatsCount;//射手
             int PangolinCount = random.Next(highCount / 2);//穿山甲
@@ -124,56 +124,57 @@ namespace GameServer.Cache.Fight
             {
                 //OrcHero orcHero = new OrcHero();
                 //armycardList.Add(orcHero);
-                cardDtos.Add(new CardDto(CardId.Add_Get(), RaceType.ORC, OrcArmyCardType.Hero,false,ArmyClassType.Hero));
+                //cardDtos.Add(new CardDto(CardId.Add_Get(), RaceType.ORC, OrcArmyCardType.Hero,false,ArmyClassType.Hero));
+                cardDtos.Add(new CardDto(CardId.Add_Get(), RaceType.ORC, OrcArmyCardType.Hero,ArmyMoveType.LAND, ArmyClassType.Hero));
             }
 
             for (int i = 0; i < infantryCount; i++)
             {
                 //OrcInfantry orcInfantry = new OrcInfantry();
                 //armycardList.Add(orcInfantry);
-                cardDtos.Add(new CardDto(CardId.Add_Get(), RaceType.ORC, OrcArmyCardType.Infantry,false,ArmyClassType.Ordinary));
+                cardDtos.Add(new CardDto(CardId.Add_Get(), RaceType.ORC, OrcArmyCardType.Infantry,ArmyMoveType.LAND,ArmyClassType.Ordinary));
             }
 
             for(int i = 0; i < eagleCount; i++)
             {
                 //OrcEagleRiders orcEagleRiders = new OrcEagleRiders();
                 //armycardList.Add(orcEagleRiders);
-                cardDtos.Add(new CardDto(CardId.Add_Get(), RaceType.ORC, OrcArmyCardType.Eagle_Riders,true, ArmyClassType.Ordinary));
+                cardDtos.Add(new CardDto(CardId.Add_Get(), RaceType.ORC, OrcArmyCardType.Eagle_Riders, ArmyMoveType.SKY,ArmyClassType.Ordinary));
             }
 
             for(int i = 0; i < blackRatsCount; i++)
             {
                 //OrcBlackRatsBoomer orcBlackRatsBoomer = new OrcBlackRatsBoomer();
                 //armycardList.Add(orcBlackRatsBoomer);
-                cardDtos.Add(new CardDto(CardId.Add_Get(), RaceType.ORC, OrcArmyCardType.Black_Rats_Boomer,false, ArmyClassType.MiddleClass));
+                cardDtos.Add(new CardDto(CardId.Add_Get(), RaceType.ORC, OrcArmyCardType.Black_Rats_Boomer, ArmyMoveType.UNDERGROUND,ArmyClassType.MiddleClass));
             }
 
             for(int i = 0; i < FrogCount; i++)
             {
                 //OrcGiantmouthedFrog orcGiantmouthedFrog = new OrcGiantmouthedFrog();
                 //armycardList.Add(orcGiantmouthedFrog);
-                cardDtos.Add(new CardDto(CardId.Add_Get(), RaceType.ORC, OrcArmyCardType.Giant_mouthed_Frog,false, ArmyClassType.MiddleClass));
+                cardDtos.Add(new CardDto(CardId.Add_Get(), RaceType.ORC, OrcArmyCardType.Giant_mouthed_Frog, ArmyMoveType.LAND, ArmyClassType.MiddleClass));
             }
 
             for(int i = 0; i < ForestCount; i++)
             {
                 //OrcForestShooter orcForestShooter = new OrcForestShooter();
                 //armycardList.Add(orcForestShooter);
-                cardDtos.Add(new CardDto(CardId.Add_Get(), RaceType.ORC, OrcArmyCardType.Forest_Shooter,false, ArmyClassType.MiddleClass));
+                cardDtos.Add(new CardDto(CardId.Add_Get(), RaceType.ORC, OrcArmyCardType.Forest_Shooter,ArmyMoveType.LAND ,ArmyClassType.MiddleClass));
             }
 
             for(int i = 0; i < PangolinCount; i++)
             {
                 //OrcPangolin orcPangolin = new OrcPangolin();
                 //armycardList.Add(orcPangolin);
-                cardDtos.Add(new CardDto(CardId.Add_Get(), RaceType.ORC, OrcArmyCardType.Pangolin,false, ArmyClassType.HighClass));
+                cardDtos.Add(new CardDto(CardId.Add_Get(), RaceType.ORC, OrcArmyCardType.Pangolin, ArmyMoveType.LAND,ArmyClassType.HighClass));
             }
 
             for(int i = 0; i < RavenShamanCount; i++)
             {
                 //OrcRavenShaman orcRavenShaman = new OrcRavenShaman();
                 //armycardList.Add(orcRavenShaman);
-                cardDtos.Add(new CardDto(CardId.Add_Get(), RaceType.ORC, OrcArmyCardType.Raven_Shaman,false, ArmyClassType.HighClass));
+                cardDtos.Add(new CardDto(CardId.Add_Get(), RaceType.ORC, OrcArmyCardType.Raven_Shaman, ArmyMoveType.LAND,ArmyClassType.HighClass));
             }
 
 

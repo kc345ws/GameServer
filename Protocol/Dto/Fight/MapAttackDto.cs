@@ -23,28 +23,35 @@ namespace Protocol.Dto.Fight
         public MapPoint DefenseMapPoint;
 
         /// <summary>
-        /// 攻击方是否为飞行单位
+        /// 攻击方移动方式
         /// </summary>
-        public bool AttackCanFly;
+        public int AttackMoveType;
 
-        public bool DefenseCanFly;
+        public int DefenseMoveType;
 
         public MapAttackDto() { }
 
-        public MapAttackDto(MapPoint attacklMapPoint, MapPoint defenseMapPoint, bool attackCanFly , bool defenseCanFly)
+        /*public MapAttackDto(MapPoint attacklMapPoint, MapPoint defenseMapPoint, bool attackCanFly , bool defenseCanFly)
         {
             AttacklMapPoint = attacklMapPoint;
             DefenseMapPoint = defenseMapPoint;
             AttackCanFly = attackCanFly;
             DefenseCanFly = defenseCanFly;
+        }*/
+        public MapAttackDto(MapPoint attacklMapPoint, MapPoint defenseMapPoint , int attackMovetype , int defenseMovetype)
+        {
+            AttacklMapPoint = attacklMapPoint;
+            DefenseMapPoint = defenseMapPoint;
+            AttackMoveType = attackMovetype;
+            DefenseMoveType = defenseMovetype;
         }
 
-        public void Change(MapPoint attacklMapPoint, MapPoint defenseMapPoint, bool attackCanFly, bool defenseCanFly)
+        public void Change(MapPoint attacklMapPoint, MapPoint defenseMapPoint, int attackMovetype, int defenseMovetype)
         {
             AttacklMapPoint = attacklMapPoint;
             DefenseMapPoint = defenseMapPoint;
-            AttackCanFly = attackCanFly;
-            DefenseCanFly = defenseCanFly;
+            AttackMoveType = attackMovetype;
+            DefenseMoveType = defenseMovetype;
         }
     }
 }

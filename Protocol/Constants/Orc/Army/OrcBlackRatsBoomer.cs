@@ -25,6 +25,10 @@ namespace Protocol.Constants.Orc
             Speed = 2;
             AttackRangeType = MapAttackType.NONE;
             Position = null;
+
+            MoveRangeType = MapMoveType.Four_lattice;
+            MoveType = ArmyMoveType.UNDERGROUND;
+            CanSlantAttack = false;
         }
 
         

@@ -20,7 +20,7 @@ namespace Protocol.Dto.Fight
         public int Class;//兵种卡阶级
         public int Name;//卡牌名称
 
-        public bool CanFly;
+        public int MoveType;
 
         public CardDto() { }
 
@@ -44,14 +44,14 @@ namespace Protocol.Dto.Fight
         /// <param name="id"></param>
         /// <param name="name"></param>
         /// <param name="race"></param>
-        public CardDto(int id , int race , int name ,bool canfly ,int Class)
+        public CardDto(int id , int race , int name ,int movetype ,int Class)
         {
             ID = id;
             Type = CardType.ARMYCARD;
             Name = name;
             Race = race;
             OtherType = OtherCardType.NONE;
-            CanFly = canfly;
+            MoveType = movetype;
             this.Class = Class;
         }
 

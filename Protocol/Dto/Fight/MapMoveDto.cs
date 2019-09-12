@@ -23,22 +23,23 @@ namespace Protocol.Dto.Fight
         /// <summary>
         /// 所要移动单是否为飞行单位
         /// </summary>
-        public bool CanFly;
+        //public bool CanFly;
+        public int MoveType;
 
         public MapMoveDto() { }
 
-        public MapMoveDto(MapPoint original , MapPoint move , bool canfly)
+        public MapMoveDto(MapPoint original , MapPoint move , int movetype)
         {
             OriginalMapPoint = original;
             MoveMapPoint = move;
-            CanFly = canfly;
+            MoveType = movetype;
         }
 
-        public void Change(MapPoint original, MapPoint move, bool canfly)
+        public void Change(MapPoint original, MapPoint move, int movetype)
         {
             OriginalMapPoint = original;
             MoveMapPoint = move;
-            CanFly = canfly;
+            MoveType = movetype;
         }
     }
 }

@@ -10,6 +10,9 @@ namespace Protocol.Constants
     /// </summary>
     public class ArmyMoveType
     {
+        /// <summary>
+        /// 无法移动
+        /// </summary>
         public const int NONE = 0;
 
         /// <summary>
@@ -18,8 +21,18 @@ namespace Protocol.Constants
         public const int LAND = 1;
 
         /// <summary>
-        /// 空中
+        /// 飞行
         /// </summary>
         public const int SKY = 2;
+
+        /// <summary>
+        /// 地下
+        /// </summary>
+        public const ushort UNDERGROUND= 3;
+
+        /// <summary>
+        /// 寄生
+        /// </summary>
+        public const ushort PARASITIC = 4;
     }
 }

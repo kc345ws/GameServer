@@ -44,15 +44,34 @@ namespace Protocol.Constants
         public int AttackRangeType;
 
         /// <summary>
-        /// 先在所处的位置
+        /// 移动范围类型
+        /// </summary>
+        public int MoveRangeType;
+
+        /// <summary>
+        /// 当前所处的位置
         /// </summary>
         public MapPoint Position;
 
         /// <summary>
         /// 是否飞行
         /// </summary>
-        public bool CanFly;
+        //public bool CanFly;
 
+        /// <summary>
+        /// 移动方式
+        /// </summary>
+        public ushort MoveType;
+
+        /// <summary>
+        /// 是否是我的
+        /// </summary>
+        public bool IsMine = true;
+
+        /// <summary>
+        /// 是否可以斜射
+        /// </summary>
+        public bool CanSlantAttack = false;
 
         /// <summary>
         /// 兵种技能
