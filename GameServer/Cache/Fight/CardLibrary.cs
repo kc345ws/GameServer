@@ -427,7 +427,7 @@ namespace GameServer.Cache.Fight
                 throw new Exception("牌库获取玩家索引出错");
             }
 
-            if (playercardDtos[playerIndex][0] != null)
+            if (playercardDtos[playerIndex].Count > 0)
             {
                 CardDto cardDto = playercardDtos[playerIndex][0];
                 playercardDtos[playerIndex].RemoveAt(0);
