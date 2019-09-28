@@ -33,9 +33,9 @@ namespace Protocol.Constants.Orc
 
         
 
-        public void Skill()
+        /*public void Skill()
         {
             //TODO 反击背刺
-        }
+        }*/
     }
 }

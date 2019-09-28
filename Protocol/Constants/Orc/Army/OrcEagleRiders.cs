@@ -31,10 +31,10 @@ namespace Protocol.Constants.Orc
             CanSlantAttack = false;
         }    
 
-        public void Skill()
+        /*public void Skill()
         {
             throw new NotImplementedException();
             //TODO 飞行
-        }
+        }*/
     }
 }

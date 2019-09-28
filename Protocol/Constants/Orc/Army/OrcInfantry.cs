@@ -33,9 +33,5 @@ namespace Protocol.Constants.Orc
 
         
 
-        public void Skill()
-        {
-            
-        }
     }
 }

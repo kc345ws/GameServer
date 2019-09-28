@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Protocol.Constants
 {
-    public abstract class ArmyCardBase :CardBase
+    public abstract class ArmyCardBase : CardBase
     {
         /// <summary>
         /// 所属种族
@@ -76,6 +76,8 @@ namespace Protocol.Constants
         /// <summary>
         /// 兵种技能
         /// </summary>
-        public void Skill() { }
+        //public void Skill() { }
+
+        
     }
 }
