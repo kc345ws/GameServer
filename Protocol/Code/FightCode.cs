@@ -102,5 +102,9 @@ namespace Protocol.Code
         public const ushort GAME_OVER_CREQ = 37;
         public const ushort GAME_OVER_SRES = 38;
         public const ushort GAME_OVER_SBOD = 39;
+
+        public const ushort ARMY_USE_SKILL_CREQ = 40;
+        public const ushort ARMY_USE_SKILL_SRES = 41;
+        public const ushort ARMY_USE_SKILL_SBOD = 442;
     }
 }

@@ -98,6 +98,7 @@
     <Compile Include="Dto\Fight\MapPointDto.cs" />
     <Compile Include="Dto\Fight\OverDto.cs" />
     <Compile Include="Dto\Fight\PlayerDto.cs" />
+    <Compile Include="Dto\Fight\SkillDto.cs" />
     <Compile Include="Dto\MatchRoomDto.cs" />
     <Compile Include="Dto\SceneLoadMsg.cs" />
     <Compile Include="Dto\UserDto.cs" />

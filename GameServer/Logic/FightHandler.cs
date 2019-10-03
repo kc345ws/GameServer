@@ -97,6 +97,10 @@ namespace GameServer.Logic
                 case FightCode.GAME_OVER_CREQ:
                     processGameOver(clientPeer);
                     break;
+
+                case FightCode.ARMY_USE_SKILL_CREQ:
+                    processArmySkill(clientPeer, value as SkillDto);
+                    break;
             }
 
         }
@@ -261,6 +265,29 @@ namespace GameServer.Logic
         #endregion
 
         #region 战斗单位请求
+        /// <summary>
+        /// 处理单位技能
+        /// </summary>
+        private void processArmySkill(ClientPeer clientPeer,SkillDto skillDto)
+        {
+            SingleExecute.Instance.processSingle(
+                () =>
+                {
+                    if (!UserCache.Instance.IsOnline(clientPeer))
+                    {
+                        return;
+                    }
+
+                    int uid = UserCache.Instance.GetId(clientPeer);
+                    FightRoom fightRoom = FightRoomCache.Instance.GetRoomByUid(uid);
+
+                    //向房间内其他人发送兵种技能消息
+                    fightRoom.Broadcast(OpCode.FIGHT, FightCode.ARMY_USE_SKILL_SBOD, skillDto, clientPeer);
+
+                    //
+                }
+                );
+        }
 
         /// <summary>
         /// 处理地图放置兵种请求
