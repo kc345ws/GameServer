@@ -29,6 +29,8 @@ namespace Protocol.Constants.Orc
             MoveRangeType = MapMoveType.Four_lattice;
             MoveType = ArmyMoveType.LAND;
             CanSlantAttack = true;
+
+            SkillRangeType = MapSkillType.Three_Oblique;
         }
 
        

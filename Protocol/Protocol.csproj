@@ -58,6 +58,7 @@
     <Compile Include="Constants\Map\MapAttackType.cs" />
     <Compile Include="Constants\Map\MapMoveType.cs" />
     <Compile Include="Constants\Map\MapPoint.cs" />
+    <Compile Include="Constants\Map\MapSkillType.cs" />
     <Compile Include="Constants\Orc\Army\OrcArmyCardType.cs" />
     <Compile Include="Constants\Orc\Army\OrcBlackRatsBoomer.cs" />
     <Compile Include="Constants\Orc\Army\OrcEagleRiders.cs" />

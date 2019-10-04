@@ -49,6 +49,11 @@ namespace Protocol.Constants
         public int MoveRangeType;
 
         /// <summary>
+        /// 技能范围类型
+        /// </summary>
+        public int SkillRangeType;
+
+        /// <summary>
         /// 当前所处的位置
         /// </summary>
         public MapPoint Position;
