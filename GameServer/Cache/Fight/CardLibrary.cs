@@ -106,19 +106,22 @@ namespace GameServer.Cache.Fight
 
             Random random = new Random();
             //17张兵种牌
-            int ordinaryCount = random.Next(7, 12);//普通兵种7-11张
+            /*int ordinaryCount = random.Next(7, 12);//普通兵种7-11张
             int middleCount = random.Next(0, 6);//中级0-5           
+            int HeroCount = 1;//英雄一张*/
+            int ordinaryCount = 7;
+            int middleCount = 5;     
             int HeroCount = 1;//英雄一张
             //剩余为髙阶
-            int highCount = 17 - ordinaryCount - middleCount - HeroCount;
+            int highCount = 4;
 
-            int infantryCount = random.Next(ordinaryCount / 2);//兽族步兵
-            int eagleCount = ordinaryCount - infantryCount;//鹰骑士
+            int infantryCount = 4;//兽族步兵
+            int eagleCount = 3;//鹰骑士
             int blackRatsCount = 0;//黑鼠爆破手
-            int FrogCount = (middleCount - blackRatsCount) / 2;//巨口蛙
-            int ForestCount = middleCount - FrogCount - blackRatsCount;//射手
-            int PangolinCount = random.Next(highCount / 2);//穿山甲
-            int RavenShamanCount = highCount - PangolinCount;//乌鸦萨满
+            int FrogCount = 3;//巨口蛙
+            int ForestCount = 2;//射手
+            int PangolinCount = 2;//穿山甲
+            int RavenShamanCount = 2;//乌鸦萨满
 
             for(int i = 0; i < HeroCount; i++)
             {
@@ -179,11 +182,11 @@ namespace GameServer.Cache.Fight
 
 
             //指令卡24-28张
-            int OrderCount = random.Next(24, 29);
-            int AttackCount = 9;//攻击卡9
+            int OrderCount = 26;
+            int AttackCount = 12;
             int DodgeCount = 6;//闪避卡6张
             int BackAttackCount = 4;//反击卡4张
-            int RestCount = OrderCount - AttackCount - DodgeCount - BackAttackCount;//修养卡
+            int RestCount = 4;//修养卡
             int ShuffleCount = 0;//洗牌0张张
             //int TakeCount = OrderCount - AttackCount - DodgeCount - BackAttackCount - RestCount - ShuffleCount;
             int TakeCount = 0;//抽卡0张
@@ -241,7 +244,7 @@ namespace GameServer.Cache.Fight
 
 
             //非指令卡10-15张
-            int OtherCount = 56 - 17 - OrderCount;
+            int OtherCount = 13;
             int LandLifeCount = 1;//生息之地1张
             int Recovery_siphonCount = 1;//复原虹吸1张       
             int Sky_fireCount = 1;//天火一张                      
