@@ -392,14 +392,16 @@ namespace GameServer.Cache.Fight
             for(int i = 0; i < 56; i++)
             {
                 int index = indexList[i];
-                shuffleCards1[index] = playercardDtos[0][i];
+                shuffleCards1[i] = playercardDtos[0][index];
+                shuffleCards2[i] = playercardDtos[1][55-index];
             }
 
-            for (int i = 55; i >= 0; i--)
+            /*for (int i = 55; i >= 0; i--)
             {
                 int index = indexList[i];
-                shuffleCards2[index] = playercardDtos[1][i];
-            }
+                shuffleCards2[i] = playercardDtos[1][index];
+            }*/
+
             /*for(int i = 0; i < 56; i++)
             {
                 int index = indexqueue.Dequeue();
