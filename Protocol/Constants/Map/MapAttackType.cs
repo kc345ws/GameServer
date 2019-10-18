@@ -20,6 +20,7 @@ namespace Protocol.Constants.Map
                 return instance;
             } }
 
+
         private MapAttackType() { }
         /// <summary>
         /// 攻击距离为0

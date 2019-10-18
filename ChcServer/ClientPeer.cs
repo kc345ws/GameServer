@@ -16,7 +16,8 @@ namespace ChcServer
         {
             ReceiveArgs = new SocketAsyncEventArgs();
             ReceiveArgs.UserToken = this;
-            ReceiveArgs.SetBuffer(new byte[1024], 0, 1024);
+            //ReceiveArgs.SetBuffer(new byte[1024], 0, 1024);
+            ReceiveArgs.SetBuffer(new byte[4096], 0, 4096);
             clientdataCache = new List<byte>();
             sendQueue = new Queue<byte[]>();
             SendArgs = new SocketAsyncEventArgs();
