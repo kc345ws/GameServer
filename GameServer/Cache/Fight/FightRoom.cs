@@ -306,7 +306,31 @@ namespace GameServer.Cache.Fight
                 cardList.Add(cardDto);
             }
             return cardList;
-        }    
+        }
+
+        /// <summary>
+        /// 给发玩家发指定类型的卡牌
+        /// </summary>
+        /// <param name="uid"></param>
+        /// <param name="CardType"></param>
+        /// <returns></returns>
+        public List<CardDto> DispathCard(int uid,int cardType)
+        {
+            PlayerDto player = GetPlayerDto(uid);
+            List<CardDto> cardList = new List<CardDto>();
+            for (int i = 0; i < 1; i++)
+            {
+                CardDto cardDto = cardLibrary.DispatchCard(uid, cardType);
+
+                if (cardDto == null)
+                {
+                    break;
+                }
+                player.AddCard(cardDto);
+                cardList.Add(cardDto);
+            }
+            return cardList;
+        }
 
         /// <summary>
         /// 获取玩家数据

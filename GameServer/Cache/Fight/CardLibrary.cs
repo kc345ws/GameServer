@@ -442,6 +442,40 @@ namespace GameServer.Cache.Fight
         }
 
         /// <summary>
+        /// 给玩家发指定类型的牌
+        /// </summary>
+        /// <returns></returns>
+        public CardDto DispatchCard(int uid , int cardType)
+        {
+            int playerIndex = getIndexByUid(uid);
+            if (playerIndex == -1)
+            {
+                throw new Exception("牌库获取玩家索引出错");
+            }
+
+            if (playercardDtos[playerIndex].Count > 0)
+            {
+                CardDto cardDto = null;
+                //playercardDtos[playerIndex].RemoveAt(0);
+                for(int i = 0; i < playercardDtos[playerIndex].Count; i++)
+                {
+                    if((playercardDtos[playerIndex][i].Type == CardType.ARMYCARD &&
+                        playercardDtos[playerIndex][i].Class == ArmyClassType.HighClass)||
+                        (playercardDtos[playerIndex][i].Type == CardType.ARMYCARD &&
+                        playercardDtos[playerIndex][i].Class == ArmyClassType.MiddleClass))
+                    {
+                        cardDto = playercardDtos[playerIndex][i];
+                        playercardDtos[playerIndex].RemoveAt(i);
+                        break;
+                    }
+                }
+
+                return cardDto;
+            }
+            return null;
+        }
+
+        /// <summary>
         /// 通过玩家ID获得玩家索引
         /// </summary>
         /// <returns></returns>

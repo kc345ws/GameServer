@@ -173,10 +173,42 @@ namespace GameServer.Logic
 
                 int uid = UserCache.Instance.GetId(clientPeer);
                 FightRoom fightRoom = FightRoomCache.Instance.GetRoomByUid(uid);
-                fightRoom.Broadcast(OpCode.FIGHT, FightCode.USE_OTHERCARD_SBOD, cardDto, clientPeer);
 
-                //在服务器上移除玩家相应非指令卡
-                fightRoom.RemoveCard(uid, cardDto);
+
+                switch (cardDto.Race)
+                {
+                    case RaceType.ORC:
+                        switch (cardDto.Name)
+                        {
+                            case OrcOtherCardType.Ancestor_Helmets://先祖头盔
+                                fightRoom.Broadcast(OpCode.FIGHT, FightCode.USE_OTHERCARD_SBOD, cardDto, clientPeer);
+
+                                //在服务器上移除玩家相应非指令卡
+                                fightRoom.RemoveCard(uid, cardDto);
+
+                                break;
+
+                            case OrcOtherCardType.Totem_summon://召唤图腾
+                                List<CardDto> cardDtos = fightRoom.DispathCard(uid, CardType.ARMYCARD);
+
+                                if(cardDtos.Count > 0)
+                                {
+                                    //给玩家发送发牌消息
+                                    //fightRoom.Broadcast(OpCode.FIGHT, FightCode.ADD_CARD_SRES, cardlist);
+                                    clientPeer.StartSend(OpCode.FIGHT, FightCode.ADD_CARD_SRES, cardDtos);
+                                    //给房间内除其他玩家发送发牌消息
+                                    fightRoom.Broadcast(OpCode.FIGHT, FightCode.ADD_CARD_SBOD, cardDtos.Count, clientPeer);
+                                }
+                                else
+                                {
+                                    //牌库内没有其他中高阶单位
+                                    clientPeer.StartSend(OpCode.FIGHT, FightCode.USE_OTHERCARD_SRES, cardDto);
+                                }
+                                break;
+                        }
+                        break;
+                }
+            
             });
 
         }
